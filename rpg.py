@@ -108,9 +108,19 @@ class Player:
                 exit()
 
 
-# defend skill and xp system? furthermore, add enemy level classes? Add more story and journey. focus on the road.
-# life is a road. make the journey like that road. sometimes you learn things from just getting through stuff (xp).
-# sometimes you learn from others (encounters).
+#  Work on Monster class stuff more. A few more attacks to flesh it out a bit including a heavy attack which will
+#  add a reason to use the defence skill. add more non-combat encounters because that is something that currently
+#  would greatly benefit the game by adding experiences that will change how game goes. finish rest, cooking thing (inv)
+#  worn down houses on the road, OH little shrines that how score checks and interactions do with them change stuff
+#  like what player will more often find, power of monsters, element powers, etc.
+
+#  Add a way for player to explore the world with a map or some kind of road that the player goes down.
+
+#  After that add a few random characters that player can either fight or help????
+#  after that add xp system so fighting also adds experience for people going in that direction.
+#  make a reason for player to use multiple skills.
+#  Add more story and journey. focus on the road. life is a road. make the journey like that road.
+#  sometimes you learn things from just getting through stuff (xp). sometimes you learn from others (encounters).
 
 def ability_modifier_maker():  # takes the numbers from stats and transforms them into ability modifiers.
     keys = []
