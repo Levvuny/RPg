@@ -21,8 +21,33 @@ def buried_house():
     pass
 
 
-def burning_fire(player):
-    pass
+def short_rest(player):
+    d20r = random.randint(1, 20)
+    wisdom_roll = d20r + player.stat_ability["wis_ability"]
+    if d20r == 1:
+        print("The journey has taken a toll on you and even rest seems hard to find. You try to find some comfort, but")
+        print("it seems that the road calls to you without stopping. Abandoning your rest, you answer the call.")
+        player.status["summonGreg"] += 1
+        return
+
+    if wisdom_roll >= 20:
+        print("You sit by a tree and take in the world around you. Sometimes part of the journey is enjoying the")
+        print("little parts. You watch the ants as they scramble through the grass and wonder if anyone watches you")
+        print("as you do the same.\n")
+        player.status["health"] = player.status["max_health"]
+        player.status["poison"] = 0
+        time.sleep(3)
+        print("After enjoying the scenery for a beautiful moment you decide the road is calling you yet again.")
+        return
+
+    elif wisdom_roll == range(13, 20):
+        pass
+
+    elif wisdom_roll == range(5, 13):
+        pass
+
+    elif wisdom_roll > 5:
+        pass
 
 
 def old_man(player, enemy,):

@@ -1,4 +1,5 @@
 import random
+import json
 import enemies
 import encounters
 
@@ -28,6 +29,7 @@ class Player:
             "max_health": 0,
             "ac": 0,
             "poison": 0,
+            "summonGreg": 0
         }
         self.skills = {
             "attack": 1,
@@ -42,7 +44,8 @@ class Player:
             "health": health,
             "max_health": health,
             "ac": 10 + self.stat_ability["dex_ability"],
-            "poison": 0
+            "poison": 0,
+            "summonGreg": 0
         }
         self.skills = {
             "attack": 1,
@@ -96,7 +99,7 @@ class Player:
                 print("You have died. Game over!")
                 exit()
 
-            print(f'The {enemy.name} attacks you!')
+            #  this is the entire enemy turn lol
             self.status["health"], self.status["poison"] = enemy.combat_choice(self)  # goes into the enemy class
             print(f'You have {self.status["health"]} health left.\n')
 
@@ -356,23 +359,23 @@ def skill_definitions():  # A program to let player read what their skills do
 player = Player()
 loading_system()
 
-answer = 0
+command = 0
 print("what do you want to do?")
-while answer != "quit":
-    answer = input()
-    if answer == "fight":
+while command != "quit":
+    command = input()
+    if command == "fight":
         random.shuffle(player.knownMonsters)
         player.basic_combat(enemies.enemy_definers(player.knownMonsters[0]))
-        answer = input()
+        command = "egg"
 
-    if answer == "encounter":
+    if command == "encounter":
         randMon = enemies.Monster(player.knownMonsters[0])
         encounters.old_man(player, randMon)
-        answer = input()
+        command = "egg"
 
-    if answer == "skills":
+    if command == "skills":
         skill_definitions()
-        answer = input()
+        command = "egg"
 
 
 stat_saver()

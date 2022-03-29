@@ -19,7 +19,6 @@ def d20():  # a basic d20 that also tells for critical fails/successes.
 
 modifier = ["lazy", "fabulous", "cringe", "random", "wild", "sad", "all-knowing", "playboy", "fishy", "green",
             "light green", "ugly", "eccentric"]
-random.shuffle(modifier)
 
 
 def enemy_definers(name, lvl=0):
@@ -27,6 +26,13 @@ def enemy_definers(name, lvl=0):
         return Poison(name, lvl)
     else:
         return Monster(name, lvl)
+
+
+def name_maker(name):
+    random.shuffle(modifier)
+    names = modifier[1] + " " + name
+    return names
+
 
 
 class Monster:
@@ -46,9 +52,10 @@ class Monster:
         self.cha = (random.randint(1, 15) - 10) // 2 + (self.lvl - 1)
         self.ac = 8 + random.randint(-1, 1)
         self.health = max(random.randint(1, 5) + random.randint(1, 5) + self.con + 2, 1)
-        self.name = modifier[1] + " " + name
+        self.name = name_maker(name)
 
     def basic_attack(self, player):
+        print(f'The {self.name} attacks you!')
         d20roll = d20()
         attack_roll = d20roll + self.str - player.status["ac"]
         damage = max((random.randint(1, 6) + self.str), 1)
@@ -68,6 +75,7 @@ class Monster:
             return player.status["health"], player.status["poison"]
 
     def poison(self, player):
+        print(f'The {self.name} spits poison at you!')
         d20roll = d20()
         attack_roll = d20roll + self.str - player.status["ac"]
         damage = max((random.randint(1, 2) + self.str), 1)
