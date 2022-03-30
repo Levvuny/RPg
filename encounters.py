@@ -41,7 +41,15 @@ def short_rest(player):
         return
 
     elif wisdom_roll == range(13, 20):
-        pass
+        print("You find an old statue to lay down beside. The statue, ancient in making, is the form of one of the")
+        print("ancient rulers of the land. Vines have overtaken much of the statue but you can still see a scowl on")
+        print("on the face of the once king. One hand has fallen to the weather, but the remaining one points forward.")
+        print("You wonder what the Frowning King was pursuing. Maybe they just made this statue on one of his bad days")
+        time.sleep(3)
+        print("As you get up to continue your journey, the statue continues to point towards the horizon forever more.")
+        if player.status["health"] < player.status["max_health"]:
+            player.status["health"] += 1
+        player.knowledge.append("Frowning King")
 
     elif wisdom_roll == range(5, 13):
         pass
@@ -89,10 +97,11 @@ def old_man(player, enemy,):
                 print("The soup is disgusting, but the company is worth it. The old man tells you tales of fights long")
                 print("done that he participated in. As he talks, he gives some tips of how to defend yourself when")
                 print("you're in battle. As you get up to continue your journey, you are grateful for the time. His")
-                print(f'last words warn you to watch out for {monsterNames[1]}s. He saw one recently.')
+                print(f'last words warn you to watch out for {monsterNames[1]}s. He saw one recently.\n')
                 player.skills["defend"] = 1
                 player.status["health"] = player.status["max_health"]
                 player.status["poison"] = 0
+                print("Skill: 'Defense' learned!")
                 if monsterNames[1] not in player.knownMonsters:
                     player.knownMonsters.append(monsterNames[1])
                 return

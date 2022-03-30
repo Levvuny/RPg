@@ -3,8 +3,6 @@ import json
 import enemies
 import encounters
 
-file = open("stats.txt", "r+")
-
 
 class Player:
     def __init__(self):
@@ -37,6 +35,7 @@ class Player:
             "defend": 0,
         }
         self.knownMonsters = ["slime"]
+        self.knowledge = []
 
     def stat_reset(self):
         health = random.randint(1, 8) + self.stat_ability["con_ability"]
@@ -148,34 +147,10 @@ def d20():  # a basic d20 that also tells for critical fails/successes.
 
 
 def stat_saver():  # will save the player info to text files
-
-    for name, lists in player.__dict__.items():
-        if isinstance(lists, dict):  # checks to see if it is a dictionary to know to load it in  that way
-
-            save = open(f'{name}.txt', "w")  # opens dict
-            nl = "\n"
-
-            for j in range(len(player.__dict__[name])):  # cycles however many entries are in loaded dict
-                stat_items = []
-
-                for value in (player.__dict__[name]).values():  # adds the values of said dict to a list
-                    stat_items.append(value)
-                value = stat_items[j]  # picks one specific value for a loop
-
-                if j == len(player.__dict__[name]) - 1:  # gets rid of nl when last value
-                    nl = ""
-                save.write(f'{value}{nl}')  # saves one value on one line, then repeats till range is done
-            save.close()
-
-        elif isinstance(lists, list):  # does the same system but with lists
-            nl = "\n"
-            save = open(f'{name}.txt', "w+")  # loads dictionary
-
-            for list_values in range(len(player.__dict__[name])):  # gets the number in the list so it can cycle
-                if list_values == len(player.__dict__[name]) - 1:
-                    nl = ""
-                save.write(f'{lists[list_values]}{nl}')  # saves one line per cycle
-            save.close()
+    player_data = open("player-data.txt", "r+")
+    player_info = json.dumps(player.__dict__)
+    player_data.write(player_info)
+    player_data.close()
 
 
 def stat_roll():   # Rolls all the dice needed for one stat.
@@ -216,49 +191,16 @@ def stat_maker():
     player.knownMonsters.clear()
     player.knownMonsters.append("slime")
     player.stat_reset()
+    player.knowledge.clear()
 
 
 def loading_system():
-    filed = open("stats.txt", "r+")
-    file_tester = filed.read()
+    player_data = open("player-data.txt", "r+")
+    file_test = player_data.read()
 
-    if file_tester:
-        dict_list = []
-        list_list = []
-
-        for name, lists in player.__dict__.items():
-            if isinstance(lists, dict):  # checks to see if it is a dictionary to know to load it in  that way.
-                dict_list.append(name)
-
-                for dict_name in dict_list:  # cycles through dictionaries and opens their file
-                    filer = open(f'{dict_name}.txt', "r+")
-                    dict_file = filer.read()
-                    dict_file = dict_file.split("\n")
-                    dict_key = getattr(player, dict_name)
-                    key_list = []
-                    for key in dict_key:
-                        key_list.append(key)
-
-                    for j in range(len(dict_key)):  # will go for as many items there are in dictionary and load
-                        key_list_final = key_list[j]
-                        try:
-                            player.__dict__[dict_name][key_list_final] = int(dict_file.pop(0))
-                        except ValueError:
-                            player.__dict__[dict_name][key_list_final] = (dict_file.pop(0))
-                    filer.close()
-
-            elif isinstance(lists, list):
-                list_list.append(name)  # is used for lists instead of dictionaries. Way easier.
-                player.knownMonsters.clear()
-
-                for list_name in list_list:  # will go for as many list types are in player
-                    filer = open(f'{list_name}.txt', "r+")
-                    list_file = filer.read()
-                    list_file = list_file.split("\n")
-
-                    for item in list_file:  # will add as many items as are in the
-                        player.__dict__[list_name].append(item)
-                    filer.close()  # closes
+    if file_test:
+        player.__dict__ = json.loads(file_test)
+        player_data.close()
 
         answer_options = ["yes", "no"]  # gives you the option to either load your stats or start from scratch.
         file_answer = 0
@@ -385,6 +327,10 @@ while command != "quit":
 
     if command == "skills":
         skill_definitions()
+        command = "egg"
+
+    if command == "stats":
+        print(player.__dict__)
         command = "egg"
 
 
