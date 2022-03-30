@@ -34,7 +34,6 @@ def name_maker(name):
     return names
 
 
-
 class Monster:
     def __init__(self, name, lvl=0):
         self.lvl = lvl  # if player doesn't put a level in, it will automatically set a level based on the name

@@ -87,7 +87,7 @@ def old_man(player, enemy,):
             if soup == "join" and player.skills["defend"] != 1:
                 random.shuffle(monsterNames)
                 print("The soup is disgusting, but the company is worth it. The old man tells you tales of fights long")
-                print("done that he participated in.  As he talks, he gives some tips of what to watch out for when")
+                print("done that he participated in. As he talks, he gives some tips of how to defend yourself when")
                 print("you're in battle. As you get up to continue your journey, you are grateful for the time. His")
                 print(f'last words warn you to watch out for {monsterNames[1]}s. He saw one recently.')
                 player.skills["defend"] = 1
