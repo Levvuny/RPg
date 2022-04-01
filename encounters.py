@@ -23,7 +23,7 @@ def buried_house():
 
 def short_rest(player):
     d20r = random.randint(1, 20)
-    wisdom_roll = d20r + player.stat_ability["wis_ability"]
+    wisdom_roll = d20r + player.stat_ability["wis"]
     if d20r == 1:
         print("The journey has taken a toll on you and even rest seems hard to find. You try to find some comfort, but")
         print("it seems that the road calls to you without stopping. Abandoning your rest, you answer the call.")

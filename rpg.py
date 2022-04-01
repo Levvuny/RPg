@@ -312,26 +312,26 @@ def skill_definitions():  # A program to let player read what their skills do
 player = Player()
 loading_system()
 
-# command = input("what do you want to do?\n").lower()
-# while command != "quit":
-#
-#     if command == "fight":
-#         random.shuffle(player.knownMonsters)
-#         player.basic_combat(enemies.enemy_definers(player.knownMonsters[0]))
-#
-#     if command == "encounter":
-#         randMon = enemies.Monster(player.knownMonsters[0])
-#         encounters.old_man(player, randMon)
-#
-#     if command == "skills":
-#         skill_definitions()
-#
-#     if command == "stats":
-#         print(player.__dict__)
-#
-#     command = input().lower()
+command = input("what do you want to do?\n").lower()
+while command != "quit":
 
-randMon = enemies.enemy_definers("slime")
-combat.basic_combat(player, randMon)
+    if command == "fight":
+        random.shuffle(player.knownMonsters)
+        player.basic_combat(enemies.enemy_definers(player.knownMonsters[0]))
+
+    if command == "encounter":
+        randMon = enemies.Monster(player.knownMonsters[0])
+        encounters.old_man(player, randMon)
+
+    if command == "skills":
+        skill_definitions()
+
+    if command == "stats":
+        print(player.__dict__)
+
+    command = input().lower()
+
+# randMon = enemies.enemy_definers("slime")
+# combat.basic_combat(player, randMon)
 
 stat_saver()
