@@ -1,0 +1,34 @@
+{
+  "stats": {
+    "str": 12,
+    "dex": 11,
+    "con": 10,
+    "wis": 15,
+    "int": 13,
+    "cha": 12
+  },
+  "stat_ability": {
+    "str_ability": 1,
+    "dex_ability": 0,
+    "con_ability": 0,
+    "wis_ability": 2,
+    "int_ability": 1,
+    "cha_ability": 1
+  },
+  "status": {
+    "health": 8,
+    "max_health": 8,
+    "ac": 10,
+    "poison": 0,
+    "summonGreg": 0
+  },
+  "skills": {
+    "attack": 1,
+    "flee": 1,
+    "defend": 0
+  },
+  "knownMonsters": [
+    "slime"
+  ],
+  "knowledge": []
+}

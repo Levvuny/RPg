@@ -2,6 +2,7 @@ import random
 import json
 import enemies
 import encounters
+import combat
 
 
 class Player:
@@ -147,7 +148,7 @@ def d20():  # a basic d20 that also tells for critical fails/successes.
 
 
 def stat_saver():  # will save the player info to text files
-    player_data = open("player-data.txt", "r+")
+    player_data = open("player-data.json", "w")
     player_info = json.dumps(player.__dict__)
     player_data.write(player_info)
     player_data.close()
@@ -195,7 +196,7 @@ def stat_maker():
 
 
 def loading_system():
-    player_data = open("player-data.txt", "r+")
+    player_data = open("player-data.json", "r+")
     file_test = player_data.read()
 
     if file_test:
@@ -311,27 +312,26 @@ def skill_definitions():  # A program to let player read what their skills do
 player = Player()
 loading_system()
 
-command = 0
-print("what do you want to do?")
-while command != "quit":
-    command = input()
-    if command == "fight":
-        random.shuffle(player.knownMonsters)
-        player.basic_combat(enemies.enemy_definers(player.knownMonsters[0]))
-        command = "egg"
+# command = input("what do you want to do?\n").lower()
+# while command != "quit":
+#
+#     if command == "fight":
+#         random.shuffle(player.knownMonsters)
+#         player.basic_combat(enemies.enemy_definers(player.knownMonsters[0]))
+#
+#     if command == "encounter":
+#         randMon = enemies.Monster(player.knownMonsters[0])
+#         encounters.old_man(player, randMon)
+#
+#     if command == "skills":
+#         skill_definitions()
+#
+#     if command == "stats":
+#         print(player.__dict__)
+#
+#     command = input().lower()
 
-    if command == "encounter":
-        randMon = enemies.Monster(player.knownMonsters[0])
-        encounters.old_man(player, randMon)
-        command = "egg"
-
-    if command == "skills":
-        skill_definitions()
-        command = "egg"
-
-    if command == "stats":
-        print(player.__dict__)
-        command = "egg"
-
+randMon = enemies.enemy_definers("slime")
+combat.basic_combat(player, randMon)
 
 stat_saver()
