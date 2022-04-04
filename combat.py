@@ -2,84 +2,58 @@
 import random
 
 
-def basic_combat(player, enemy):  # it should  take the player's info automatically and add it with a monster
-    defend_turns = 0  # used to allow turn based modifier for defence
-    real_ac = player.status["ac"]
-
-    vowels = ["a", "e", "i", "o", "u"]
-    if enemy.name[0:1] in vowels:  # grammar is good
-        grammar = "an"
-    else:
-        grammar = "a"
-    print(f'You have encountered {grammar} {enemy.name}!')
-
-    while enemy.health or player.status["health"] > 0:  # loops till fight is over
-        if defend_turns >= 1:
-            player.status["ac"] = real_ac
-            defend_turns -= 1
-
-        choice = player.combat_choice()  # lets you choose your next move
-
-        if choice == "attack":  # d20 attack to see if you can deal damage
-            enemy.health = player.basic_attack(player.stat_ability["str_ability"], enemy.ac, enemy.health)
-            if enemy.health < 1:
-                print(f'You defeated the {enemy.name}\n')
-                return
-            print(f'The {enemy.name} has {enemy.health} health left.\n')
-
-        elif choice == "flee":  # it's basically just a d20 plus mod to see if you escape.
-            escape = player.flee(player.stat_ability["dex_ability"], enemy.dex)
-            if escape:
-                print(f'You escaped the {enemy.name}\n')
-                return
-            else:
-                print("You failed to escape!\n")
-
-        elif choice == "defend":  # I don't know if I need the function, but I have it
-            player.defend()
-            defend_turns += 1
-
-        if player.status["poison"]:  # it checks for poison in status, does damage, puts poison down by one
-            player.status["health"] = player.status["health"] - 1
-            print("You took one poison damage!")
-            player.status["poison"] -= 1
-
-        if player.status["health"] < 1:  # don't die lol
-            print("You have died. Game over!")
-            exit()
-
-        #  this is the entire enemy turn lol
-        player.status["health"], player.status["poison"] = enemy.combat_choice(player)  # goes into the enemy class
-        print(f'You have {player.status["health"]} health left.\n')
-
-        if player.status["health"] < 1:
-            print("You have died. Game over!")
-            exit()
-
-
 def d20():  # a basic d20 that also tells for critical fails/successes.
     d20_roll = random.randint(1, 20)
     if d20_roll == 1:
-        print("Critical fail!")
+        print("Critical fail!\n")
         return d20_roll
     elif d20_roll == 20:
-        print("Critical success!")
+        print("Critical success!\n")
         return d20_roll
     else:
         return d20_roll
 
 
-def roll_check(attacker_mod, defender_ac):  # this one is simple. simply just works :)
+def roll_check(attacker_mod, defender_mod):  # this one is simple. simply just works :)
     d20r = d20()
     if d20r == 1:
         return False
     elif d20r == 20:
         return True
-    elif d20r + attacker_mod > defender_ac:
+    elif d20r + attacker_mod > defender_mod:
         return True
     else:
-        print("Miss!")
+        print("Miss!\n")
         return False
+
+
+def player_death_check(player):
+    if player.status["health"] < 1:
+        print("You have died. Game over!")
+        exit()
+
+
+def player_debuff_check(player):
+
+    if player.status["poison"]:  # activates if player has been poisoned, will do damage and tick down the poison
+        player.status["health"] -= 1
+        player.status["poison"] -= 1
+        print("You have taken 1 poison damage!")
+        player_death_check(player)
+
+        if player.status["poison"] <= 0:
+            print("You are no longer poisoned.")
+
+    if player.status["fire"]:
+        player.status["health"] -= player.status["fire"]
+        print(f'You have taken {player.status["fire"]} fire damage!')
+        player.status["fire"] -= 1
+        player_death_check(player)
+
+        if player.status["fire"] <= 0:
+            print("You are no longer on fire.")
+
+    player_death_check(player)
 
 
 def player_buff_check(player, ac):
@@ -90,6 +64,30 @@ def player_buff_check(player, ac):
             player.buffs["defense"] -= 1  # resets ac
             if player.buffs["defense"] <= 0:
                 player.status["ac"] = ac
+
+
+def damage_dealer(enemy, info):
+    if info["damage_type"] in enemy.resistance:
+        info["damage"] //= 3
+        enemy.health -= info["damage"]
+        print(info["weak_hit"] + f' You delt {int(info["damage"])} {info["damage_type"]} damage!')
+    else:
+        enemy.health -= info["damage"]
+        enemy.__dict__[info["damage_type"]] += info["fire_turns"]
+        print(info["success_hit"] + f' You delt {int(info["damage"])} {info["damage_type"]} damage!')
+
+
+def enemy_debuff_check(enemy):
+
+    if enemy.fire:
+        enemy.health -= enemy.fire  # does more damage than poison, but is harder to stack
+        print(f'The {enemy.name} has taken {enemy.fire} fire damage\n')
+        enemy.fire -= 1
+
+    if enemy.poisoned:
+        enemy.health -= 1
+        print(f'The {enemy.name} has taken 1 poison damage\n')
+        enemy.poisoned -= 1
 
 
 def combat(player, enemy):
@@ -103,6 +101,7 @@ def combat(player, enemy):
     print(f'You have encountered {grammar} {enemy.name}!')
 
     while player.status["health"] or enemy.status["health"] > 0:
+        print(enemy.__dict__)
 
         player_buff_check(player, real_ac)  # should be able to build this up to work with turn based resets for buffs
         turn_move = player.combat_choice()  # asks for the player's input of what to do.
@@ -129,10 +128,26 @@ def combat(player, enemy):
         if turn_move == "defend":
             player.defend()
 
+        if turn_move == "fire punch":
+            if roll_check(player.stat_ability["int"], enemy.ac):  # checks to see if players int roll is better than ac
+                damage_dealer(enemy, player.fire_punch(enemy))
+
+        if enemy.health < 1:  # checks to see if player has defeated enemy yet
+            print(f'You defeated the {enemy.name}\n')
+            return
+        print(f'The {enemy.name} has {enemy.health} health left.\n')
+
         # ENEMY TURN START HERE
 
-        player_debuff_check()
+        player_debuff_check(player)
+        # enemy_buff_check(enemy)
 
+        enemy.combat_choice(player)  # goes into the enemy class
+        player_death_check(player)
+        print(f'\nYou have {player.status["health"]} health left.\n')
 
-
-
+        enemy_debuff_check(enemy)
+        if enemy.health < 1:  # checks to see if player has defeated enemy yet
+            print(f'You defeated the {enemy.name}\n')
+            return
+# ADD FIRE PUNCH TO TEST ENEMY DEBUFFS
