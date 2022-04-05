@@ -7,6 +7,7 @@ import combat
 
 class Player:
     def __init__(self):
+        self.type = "player"
         self.stats = {
             "str": 0,
             "dex": 0,
@@ -45,6 +46,7 @@ class Player:
         }
         self.knownMonsters = ["slime"]
         self.knowledge = []
+        self.resistance = ["fire"]
 
     def stat_reset(self):
         health = random.randint(1, 8) + self.stat_ability["con"]
@@ -67,11 +69,11 @@ class Player:
         self.buffs["defense"] = 0
         self.buffs["power"] = 0
 
-    def fire_punch(self, enemy):
+    def fire_punch(self, enemy):  # all the info is in dict for the attack
         info = {
             "damage": int(max(random.randint(1, 6) + self.stat_ability["str"], 1)),
             "damage_type": "fire",
-            "fire_turns": 2,
+            "debuff_turns": 2,
             "success_hit": f'Fire engulfs your hand as you smash it into the {enemy.name}.',
             "weak_hit": f'The {enemy.name} seems to greatly resist the fire.'
         }
@@ -82,10 +84,15 @@ class Player:
         self.buffs["defense"] += 1
         self.status["ac"] += 5
 
-    def damage_roll(self, mod):
-        damage = max(random.randint(1, 4) + self.stat_ability[mod], 1)
-        print(f'You did {damage} damage!\n')
-        return damage
+    def basic_attack(self, enemy):  # all the info is in dict for the attack
+        info = {
+            "damage": int(max(random.randint(1, 6) + self.stat_ability["str"], 1)),
+            "damage_type": "basic",
+            "debuff_turns": 0,
+            "success_hit": f'You swing with all your might as you attack the {enemy.name}.',
+            "weak_hit": f'Your attack seems to bounce off the  {enemy.name}.'
+        }
+        return info
 
 
     # def basic_combat(self, enemy):  # it should  take the player's info automatically and add it with a monster
