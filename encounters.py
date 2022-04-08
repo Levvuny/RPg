@@ -17,11 +17,32 @@ def d20():  # a basic d20 that also tells for critical fails/successes.
         return d20_roll
 
 
-def buried_house():
+def lonely_inn():  # locations that player can revisit as they explore more of the world
     pass
 
 
-def short_rest(player):
+def fire_shrine():
+    pass
+
+
+def sunny_road(player, enemy):  # small events like this that just happen, small thing happens one or two options
+    if random.randint(1, 20) + player.stat_ability["cha"] >= 11:
+        print("The sun shines brightly down on you. What a lovely day.\n(+ 1 health)")
+        if player.status["health"] < player.status["max_health"]:
+            player.status["health"] += 1
+    else:
+        print("The sun is bright today.\n")
+
+
+def smokey_camp():
+    pass
+
+
+def buried_house():  # lore areas
+    pass
+
+
+def short_rest(player, enemy):
     d20r = random.randint(1, 20)
     wisdom_roll = d20r + player.stat_ability["wis"]
     if d20r == 1:
@@ -31,31 +52,38 @@ def short_rest(player):
         return
 
     if wisdom_roll >= 20:
-        print("You sit by a tree and take in the world around you. Sometimes part of the journey is enjoying the")
-        print("little parts. You watch the ants as they scramble through the grass and wonder if anyone watches you")
-        print("as you do the same.\n")
-        player.status["health"] = player.status["max_health"]
-        player.status["poison"] = 0
-        time.sleep(3)
-        print("After enjoying the scenery for a beautiful moment you decide the road is calling you yet again.")
-        return
-
-    elif wisdom_roll == range(13, 20):
         print("You find an old statue to lay down beside. The statue, ancient in making, is the form of one of the")
         print("ancient rulers of the land. Vines have overtaken much of the statue but you can still see a scowl on")
         print("on the face of the once king. One hand has fallen to the weather, but the remaining one points forward.")
         print("You wonder what the Frowning King was pursuing. Maybe they just made this statue on one of his bad days")
         time.sleep(3)
         print("As you get up to continue your journey, the statue continues to point towards the horizon forever more.")
+        player.status["health"] = player.status["max_health"]
+        player.knowledge.append("Frowning King")
+        player.status["poison"] = 0
+        return
+
+    elif wisdom_roll == range(13, 20):
+        print("You sit by a tree and take in the world around you. Sometimes part of the journey is enjoying the")
+        print("little parts. You watch the ants as they scramble through the grass and wonder if anyone watches you")
+        print("as you do the same.\n")
         if player.status["health"] < player.status["max_health"]:
             player.status["health"] += 1
-        player.knowledge.append("Frowning King")
+        player.status["poison"] = 0
+        time.sleep(3)
+        print("After enjoying the scenery for a beautiful moment you decide the road is calling you yet again.")
+        return
 
     elif wisdom_roll == range(5, 13):
-        pass
+        print("You rest for a short hour, contemplating the journey that you have had and the one that is to come.")
+        print("You know you cannot relax for the long, though. The road calls.")
+        return
 
     elif wisdom_roll > 5:
-        pass
+        print("As you lay down to relax, you accidentally stab yourself on a stick. Ow!")
+        if player.status["health"] > 1:
+            player.status["health"] -= 1
+        return
 
 
 def old_man(player, enemy,):

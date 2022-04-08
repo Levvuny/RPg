@@ -60,8 +60,22 @@ def player_buff_check(player, ac):
 
         if player.buffs["defense"]:  # checks to see if defense is up and if it does it go down by one. if at zero
             player.buffs["defense"] -= 1  # resets ac
+            player.status["ac"] -= 1
             if player.buffs["defense"] <= 0:
                 player.status["ac"] = ac
+
+
+def enemy_debuff_check(enemy):
+
+    if enemy.fire:
+        enemy.health -= enemy.fire  # does more damage than poison, but is harder to stack
+        print(f'The {enemy.name} has taken {enemy.fire} fire damage\n')
+        enemy.fire -= 1
+
+    if enemy.poison:
+        enemy.health -= 1  # poison
+        print(f'The {enemy.name} has taken 1 poison damage\n')  # yeah, I comment
+        enemy.poison -= 1
 
 
 def damage_dealer(enemy, info):  # takes a dict from enemies attacks to see what attack will do when hit with resistance
@@ -90,28 +104,31 @@ def damage_dealer(enemy, info):  # takes a dict from enemies attacks to see what
             print(info["success_hit"] + f' {info["damage"]} damage!')
 
 
-def enemy_debuff_check(enemy):
-
-    if enemy.fire:
-        enemy.health -= enemy.fire  # does more damage than poison, but is harder to stack
-        print(f'The {enemy.name} has taken {enemy.fire} fire damage\n')
-        enemy.fire -= 1
-
-    if enemy.poison:
-        enemy.health -= 1  # poison
-        print(f'The {enemy.name} has taken 1 poison damage\n')  # yeah, I comment
-        enemy.poison -= 1
+def stat_reset(player, ac):
+    player.status["ac"] = ac
+    player.status["poison"] = 0
+    player.status["fire"] = 0
+    player.status["wet"] = 0
+    player.status["weakness"] = 0
+    player.buffs["defense"] = 0
+    player.buffs["power"] = 0
+    if player.status["health"] > player.status["max_health"]:
+        player.status["health"] = player.status["max_health"]
 
 
 def combat(player, enemy):
-    real_ac = player.status["ac"]
 
-    vowels = ["a", "e", "i", "o", "u"]
-    if enemy.name[0:1] in vowels:  # grammar is good
-        grammar = "an"
+    real_ac = player.status["ac"]
+    if enemy.name == "greg":
+        print("GREG THE HOTDOG SALESMAN IS HERE TO SEE YOU")
+
     else:
-        grammar = "a"
-    print(f'You have encountered {grammar} {enemy.name}!')
+        vowels = ["a", "e", "i", "o", "u"]
+        if enemy.name[0:1] in vowels:  # grammar is good
+            grammar = "an"
+        else:
+            grammar = "a"
+        print(f'You have encountered {grammar} {enemy.name}!')
 
     while player.status["health"] or enemy.status["health"] > 0:
 
@@ -127,13 +144,14 @@ def combat(player, enemy):
             # make an "if monster escapable" statement before this once monsters updated.
             if roll_check(player.stat_ability["dex"], enemy.dex):
                 print(f'You made it out safely from the {enemy.name}\n')
+                stat_reset(player, real_ac)
                 return
 
             else:
                 print("You failed to escape. The battle rages on. \n")
 
         if turn_move == "defend":
-            player.defend()
+            player.defend(real_ac)
 
         if turn_move == "fire punch":
             if roll_check(player.stat_ability["int"], enemy.ac):  # checks to see if players int roll is better than ac
@@ -141,6 +159,7 @@ def combat(player, enemy):
 
         if enemy.health < 1:  # checks to see if player has defeated enemy yet
             print(f'You defeated the {enemy.name}\n')
+            stat_reset(player, real_ac)
             return
         print(f'The {enemy.name} has {enemy.health} health left.\n')
 
@@ -159,5 +178,6 @@ def combat(player, enemy):
         enemy_debuff_check(enemy)
         if enemy.health < 1:  # checks to see if player has defeated enemy yet
             print(f'You defeated the {enemy.name}\n')
+            stat_reset(player, real_ac)
             return
 

@@ -41,7 +41,7 @@ class Player:
             "fire punch": 0,
         }
         self.buffs = {
-            "defend": 0,
+            "defense": 0,
             "power": 0,
         }
         self.knownMonsters = ["slime"]
@@ -69,6 +69,22 @@ class Player:
         self.buffs["defense"] = 0
         self.buffs["power"] = 0
 
+        self.knownMonsters.clear()
+        self.knownMonsters.append("slime")
+        self.knowledge.clear()
+
+    def ability_modifier_maker(self):  # takes the numbers from stats and transforms them into ability modifiers.
+        keys = []
+        for key in self.stat_ability.keys():
+            keys.append(key)
+        values = []
+        for value in self.stats.values():
+            values.append(value)
+        for v in range(len(values)):
+            values[v] = (values[v] - 10) // 2
+        for r in range(len(self.stat_ability)):
+            self.stat_ability[keys[r]] = values[r]
+
     def fire_punch(self, enemy):  # all the info is in dict for the attack
         info = {
             "damage": int(max(random.randint(1, 6) + self.stat_ability["str"], 1)),
@@ -79,10 +95,10 @@ class Player:
         }
         return info
 
-    def defend(self):
+    def defend(self, real_ac):
         print("You defend yourself for the worst.\n")
-        self.buffs["defense"] += 1
-        self.status["ac"] += 5
+        self.buffs["defense"] += 3
+        self.status["ac"] = real_ac + 4
 
     def basic_attack(self, enemy):  # all the info is in dict for the attack
         info = {
@@ -93,61 +109,6 @@ class Player:
             "weak_hit": f'Your attack seems to bounce off the  {enemy.name}.'
         }
         return info
-
-
-    # def basic_combat(self, enemy):  # it should  take the player's info automatically and add it with a monster
-    #     defend_turns = 0  # used to allow turn based modifier for defence
-    #     real_ac = self.status["ac"]
-    #
-    #     vowels = ["a", "e", "i", "o", "u"]
-    #     if enemy.name[0:1] in vowels:  # grammar is good
-    #         grammar = "an"
-    #     else:
-    #         grammar = "a"
-    #     print(f'You have encountered {grammar} {enemy.name}!')
-    #
-    #     while enemy.health or self.status["health"] > 0:  # loops till fight is over
-    #         if defend_turns >= 1:
-    #             self.status["ac"] = real_ac
-    #             defend_turns -= 1
-    #
-    #         choice = combat_choice()  # lets you choose your next move
-    #
-    #         if choice == "attack":  # d20 attack to see if you can deal damage
-    #             enemy.health = basic_attack(self.stat_ability["str_ability"], enemy.ac, enemy.health)
-    #             if enemy.health < 1:
-    #                 print(f'You defeated the {enemy.name}\n')
-    #                 return
-    #             print(f'The {enemy.name} has {enemy.health} health left.\n')
-    #
-    #         elif choice == "flee":  # it's basically just a d20 plus mod to see if you escape.
-    #             escape = flee(self.stat_ability["dex_ability"], enemy.dex)
-    #             if escape:
-    #                 print(f'You escaped the {enemy.name}\n')
-    #                 return
-    #             else:
-    #                 print("You failed to escape!\n")
-    #
-    #         elif choice == "defend":  # I don't know if I need the function, but I have it
-    #             defend()
-    #             defend_turns += 1
-    #
-    #         if self.status["poison"]:  # it checks for poison in status, does damage, puts poison down by one
-    #             self.status["health"] = self.status["health"] - 1
-    #             print("You took one poison damage!")
-    #             self.status["poison"] -= 1
-    #
-    #         if self.status["health"] < 1:  # don't die lol
-    #             print("You have died. Game over!")
-    #             exit()
-    #
-    #         #  this is the entire enemy turn lol
-    #         self.status["health"], self.status["poison"] = enemy.combat_choice(self)  # goes into the enemy class
-    #         print(f'You have {self.status["health"]} health left.\n')
-    #
-            # if self.status["health"] < 1:
-            #     print("You have died. Game over!")
-            #     exit()
 
     def combat_choice(self):  # A program to let player decide what move to do
         choices = []
@@ -182,18 +143,6 @@ class Player:
 #  make a reason for player to use multiple skills.
 #  Add more story and journey. focus on the road. life is a road. make the journey like that road.
 #  sometimes you learn things from just getting through stuff (xp). sometimes you learn from others (encounters).
-
-def ability_modifier_maker():  # takes the numbers from stats and transforms them into ability modifiers.
-    keys = []
-    for key in player.stat_ability.keys():
-        keys.append(key)
-    values = []
-    for value in player.stats.values():
-        values.append(value)
-    for v in range(len(values)):
-        values[v] = (values[v] - 10) // 2
-    for r in range(len(player.stat_ability)):
-        player.stat_ability[keys[r]] = values[r]
 
 
 def d20():  # a basic d20 that also tells for critical fails/successes.
@@ -249,11 +198,8 @@ def stat_maker():
         if raw_nums != empty:
             print(raw_nums)
 
-    ability_modifier_maker()  # creates rest of player stats
-    player.knownMonsters.clear()
-    player.knownMonsters.append("slime")
+    player.ability_modifier_maker()  # creates rest of player stats
     player.stat_reset()
-    player.knowledge.clear()
 
 
 def loading_system():
@@ -278,37 +224,6 @@ def loading_system():
             stat_maker()  # new load out!
     else:
         stat_maker()  # new load out!
-
-
-def basic_attack(mod, mod2, hp):  # calculates the damage and gives info to the player.
-    d20roll = d20()
-    attack_roll = d20roll + mod - mod2
-    damage = max((random.randint(1, 6) + mod), 1)
-    if d20roll == 1:
-        return hp
-    elif d20roll == 20:
-        hp -= damage
-        print(f"{damage} damage!")
-        return hp
-    elif attack_roll > 0:
-        hp -= damage
-        print(f"{damage} damage!")
-        return hp
-    else:
-        print("Miss!")
-        return hp
-
-
-def flee(mod1, mod2):  # like basic attack, but with fleeing.
-    d20roll = d20()
-    escape_roll = (d20roll + mod1) - mod2
-
-    if d20roll == 1:
-        return False
-    elif d20roll == 20:
-        return True
-    elif escape_roll > 0:
-        return True
 
 
 def skill_definitions():  # A program to let player read what their skills do
@@ -339,6 +254,11 @@ def skill_definitions():  # A program to let player read what their skills do
             print("Please enter another skill you want to know or type 'exit'")
             answer = input().lower()
 
+        elif answer == "fire punch":
+            print("\nA spell that enchants your fist, so that when punched into your enemy it explodes in fire.")
+            print("Please enter another skill you want to know or type 'exit'")
+            answer = input().lower()
+
         else:
             print("Please put a valid option.")
             answer = input().lower()
@@ -347,29 +267,23 @@ def skill_definitions():  # A program to let player read what their skills do
 player = Player()
 loading_system()
 
-# command = input("what do you want to do?\n").lower()
-# while command != "quit":
-#
-#     if command == "fight":
-#         random.shuffle(player.knownMonsters)
-#         player.basic_combat(enemies.enemy_definers(player.knownMonsters[0]))
-#
-#     if command == "encounter":
-#         randMon = enemies.Monster(player.knownMonsters[0])
-#         encounters.old_man(player, randMon)
-#
-#     if command == "skills":
-#         skill_definitions()
-#
-#     if command == "stats":
-#         print(player.__dict__)
-#
-#     command = input().lower()
+command = input("what do you want to do?\n").lower()
+while command != "quit":
 
-randMon = enemies.enemy_definers(player.knownMonsters[0])
-combat.combat(player, randMon)
+    if command == "fight":
+        random.shuffle(player.knownMonsters)
+        combat.combat(player, enemies.enemy_definers(player.knownMonsters[0]))
+
+    if command == "encounter":
+        randMon = enemies.enemy_definers(player.knownMonsters[0])
+        encounters.old_man(player, randMon)
+
+    if command == "skills":
+        skill_definitions()
+
+    if command == "stats":
+        print(player.__dict__)
+
+    command = input().lower()
 
 stat_saver()
-
-# damage = player.damage_roll("str")
-# print(damage)
