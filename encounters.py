@@ -1,5 +1,6 @@
 import random
 import time
+import pandas as pd
 
 
 monsterNames = ["goblin", "boar", "cow", "giant spider", "changeling", "shadow", "skeleton"]
@@ -17,7 +18,34 @@ def d20():  # a basic d20 that also tells for critical fails/successes.
         return d20_roll
 
 
+def basic_dialogue(player, enemy):
+    option = random.randint(1, 10)
+    if option == 1:
+        print("You see a squirrel run around an ancient oak tree.")
+    elif option == 2:
+        print("As you continue down the path, you stop at by a small well and fetch a drink and then continue")
+        print("down your journey.")
+    elif option == 3:
+        print("As you walk down the worn path, you see a great forest full of life. You cannot even fathom all that")
+        print("hides within those ancient trees. A blast of wind hits you and you watch as the trees dance to the beat")
+        print("of the breeze.")
+    elif option == 4:
+        print("You sure are hungry, but you keep on going.")
+    elif option == 5:
+        print("A wild boar crosses your path. It looks at you with deep, unknowing eyes and slowly walks away.")
+        if "boar" not in player.knownMonsters:
+            player.knownMonsters.append("boar")
+
+
 def lonely_inn():  # locations that player can revisit as they explore more of the world
+    pass
+
+
+def damaged_bridge(player, enemy):
+    pass
+
+
+def stormy_night(player, enemy):
     pass
 
 
