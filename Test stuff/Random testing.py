@@ -57,14 +57,23 @@ print(level_setter("fire wisp", 0))
 # print(df.values)
 
 import requests
-
-response = requests.get("https://docs.google.com/spreadsheets/d/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8/edit#gid=0&range=A1:C4")
-response.json()
+import json
+# response = requests.get("https://docs.google.com/spreadsheets/d/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8/edit#gid=0&range=A1:C4")
+# response.json()
 # response = pd.read_csv(response)
+# randPoke = ["1", "2", "3"]
+# random.shuffle(randPoke)
+# hehehehe = {'lat':'45', 'lon':'180'}
+# response = requests.get('http://api.open-notify.org/iss-pass.json', params=hehehehe)
+
+response = requests.get("https://www.boredapi.com/api/activity")
+print(json.dumps(response.json(), indent=4))
+
+pokedex = []
+for _ in range(1223):
+    pokedex.append(_)
 
 
-# response = requests.get("https://docs.python.org/3/c-api/index.html")
-
-
-
-print(response.text)
+print(pokedex)
+for x in pokedex:
+    print(x - random.randint(1, 1000))
