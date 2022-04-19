@@ -56,15 +56,34 @@ print(level_setter("fire wisp", 0))
 #
 # print(df.values)
 
+import json
 import requests
+from bs4 import BeautifulSoup
 
-response = requests.get("https://docs.google.com/spreadsheets/d/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8/edit#gid=0&range=A1:C4")
-response.json()
-# response = pd.read_csv(response)
+spells = requests.get("https://www.dnd5eapi.co/api/spells/")
+spells = spells.json()
+# if spells["attack_type"] == "ranged":
+#     print("Yay")
+# print(spells["desc"])
 
+# acid_spells = []
+# print(spells["results"][0])
+# type = input("What type of spell?\n")
+# for value in range(len(spells["results"])):
+#     # print(spells["results"][value]["name"])
+#     if type in (spells["results"][value]["name"]).lower():
+#         acid_spells.append(spells["results"][value]["url"])
+# print(acid_spells)
+# url_base = "https://www.dnd5eapi.co"
+#
+# for spells in acid_spells:
+#     url = url_base + spells
+#     spell = requests.get(url)
+#     spell = spell.json()
+#     print(spell["name"])
+#     print(spell["desc"])
+#     print("")
+#
+t = requests.get("https://script.google.com/macros/library/d/1Kc4CqAH_0yhtqX6-WyxEDEFflJbrmdyLAn3tmkPPiRp3WTEfjgNTXIhS/1")
 
-# response = requests.get("https://docs.python.org/3/c-api/index.html")
-
-
-
-print(response.text)
+print(t.text)
