@@ -1,9 +1,21 @@
-import random
-import time
 import pandas as pd
+import random
+import requests
+import time
+import combat
 
+EnemySheet = requests.get("https://sheets.googleapis.com/v4/spreadsheets/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8/values/Sheet1?key=AIzaSyB5DWWVzSER7OpXYIFVuhq0KysBzQocy7U")
 
-monsterNames = ["goblin", "boar", "cow", "giant spider", "changeling", "shadow", "skeleton"]
+EnemySheet = EnemySheet.json()
+
+EnemyInfo = pd.DataFrame(EnemySheet["values"], columns=EnemySheet["values"][0])
+EnemyInfo.drop(index=0, inplace=True)
+
+monsterNames = []
+
+for x in EnemyInfo["Name"]:
+    monsterNames.append(x)
+# monsterNames = ["goblin", "boar", "cow", "giant spider", "changeling", "shadow", "skeleton"]
 
 
 def d20():  # a basic d20 that also tells for critical fails/successes.
@@ -186,7 +198,7 @@ def old_man(player, enemy,):
             d20r2 = random.randint(1, 20)
             if d20r2 < 6:
                 print("The creature seems angry that you disturbed it and gets ready to attack you.")
-                return player.basic_combat(enemy)
+                return combat.combat(player, enemy)
 
             else:
                 print("The creature doesn't seem to be dangerous, but you can never be too safe. What do you do?")
@@ -204,4 +216,4 @@ def old_man(player, enemy,):
                     return
 
                 if moral == "attack":
-                    return player.basic_combat(enemy)
+                    return combat.combat(player, enemy)

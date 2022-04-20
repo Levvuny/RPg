@@ -1,6 +1,19 @@
 import pandas as pd
 import random
+import requests
+import json
 
+EnemySheet = requests.get("https://sheets.googleapis.com/v4/spreadsheets/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8/values/Sheet1?key=AIzaSyB5DWWVzSER7OpXYIFVuhq0KysBzQocy7U")
+
+EnemySheet = EnemySheet.json()
+
+EnemyInfo = pd.DataFrame(EnemySheet["values"], columns=EnemySheet["values"][0])
+EnemyInfo.drop(index=0, inplace=True)
+
+monsterNames = []
+
+for x in EnemyInfo["Name"]:
+    monsterNames.append(x)
 # monsters = {
 #     "Key": ["Mon1", "Mon2", "Mon3", "Mon4"],
 #     "Name": ["Slime", "Bat", "Fire Wisp", "Crab"],
@@ -8,22 +21,19 @@ import random
 # }
 #
 # MonsterData = pd.DataFrame(monsters)
-df = pd.read_csv("enemies.csv")
-monsterNames = []
 
-for x in df["Name"].values:
-    monsterNames.append(x)
+
 
 print(monsterNames)
 
-print(df["Name"].values)
+# print(df)
 
 
 def level_setter(name, level):
-    if name in df.values:
+    if name in EnemyInfo.values:
         if level != 0:
             return level
-        row_finder = df.loc[df["Name"] == name, "Difficulty"]
+        row_finder = EnemyInfo.loc[EnemyInfo["Name"] == name, "Difficulty"]
         if "easy" in row_finder.values:
             lvl = random.randint(1, 4)
             return lvl
@@ -40,7 +50,7 @@ def level_setter(name, level):
             lvl = 0
             return lvl
     else:
-        return 10000
+        return 0
 
 
 print(level_setter("fire wisp", 0))
@@ -58,7 +68,7 @@ print(level_setter("fire wisp", 0))
 
 import json
 import requests
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 
 spells = requests.get("https://www.dnd5eapi.co/api/spells/")
 spells = spells.json()
@@ -83,7 +93,4 @@ spells = spells.json()
 #     print(spell["name"])
 #     print(spell["desc"])
 #     print("")
-#
-t = requests.get("https://script.google.com/macros/library/d/1Kc4CqAH_0yhtqX6-WyxEDEFflJbrmdyLAn3tmkPPiRp3WTEfjgNTXIhS/1")
 
-print(t.text)

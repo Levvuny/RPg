@@ -1,10 +1,20 @@
+import pandas as pd
 import random
+import requests
 
-hotdog = ["greg", "smurgus"]
-fire = ["fire wisp"]
-poison = ["slime", "giant spider"]
-easy = ["goblin", "boar", "cow", "changeling", "shadow", "skeleton",]
-medium = ["giant spider", "fire wisp"]
+EnemySheet = requests.get("https://sheets.googleapis.com/v4/spreadsheets/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8/values/Sheet1?key=AIzaSyB5DWWVzSER7OpXYIFVuhq0KysBzQocy7U")
+
+EnemySheet = EnemySheet.json()
+
+EnemyInfo = pd.DataFrame(EnemySheet["values"], columns=EnemySheet["values"][0])
+EnemyInfo.drop(index=0, inplace=True)
+
+type_dict = {
+
+}
+
+modifier = ["lazy", "fabulous", "cringe", "random", "wild", "sad", "all-knowing", "playboy", "fishy", "green",
+            "light green", "ugly", "eccentric"]
 
 
 def d20():  # a basic d20 that also tells for critical fails/successes.
@@ -19,38 +29,64 @@ def d20():  # a basic d20 that also tells for critical fails/successes.
         return d20_roll
 
 
-modifier = ["lazy", "fabulous", "cringe", "random", "wild", "sad", "all-knowing", "playboy", "fishy", "green",
-            "light green", "ugly", "eccentric"]
+def type_definers():
+    types = []  # this list is uses to get all available monster types
+    for section in EnemyInfo["Type"]:  # searches each monster for their type
+        if section not in types:  # if the list doesn't have the type, it adds it
+            types.append(section)
+
+    for item in types:  # for each monster type, it adds a list to the type dictionary.
+        type_dict[item] = []
+
+    for dicts in type_dict:  # cycles through the type dictionaries in the dictionary of them
+        for name in EnemyInfo["Name"]:  # also cycles through enemy list by name
+            row_finder = EnemyInfo.loc[EnemyInfo["Name"] == name, "Type"]  # finds the row by the name and gets the type
+            if row_finder.values == dicts:  # if the monster has the right type adds it to the dictionary
+                type_dict[dicts].append(name)  # adds it so that it can be used in other programs to know its type
 
 
-def enemy_definers(name, lvl=0):
-    if name in poison:
+def enemy_definers(name, lvl=0):  # returns type of monster based on their type data
+    if name in type_dict["poison"]:
         return Poison(name, lvl)
-    elif name in fire:
+
+    elif name in type_dict["fire"]:
         return Fire(name, lvl)
-    if name in hotdog:
+
+    if name in type_dict["hotdog"]:
         return SmurgusTheHotdogMan(name, lvl)
+
     else:
         return Monster(name, lvl)
 
 
-def level_setter(lvl, name):  # will set the monster level if not already set by specific number
-    if lvl != 0:
-        return lvl
-    else:
-        if name in easy:
+def level_setter(name, level):  # will set the monster level if not already set by specific number
+    if name in EnemyInfo.values:
+        if level != 0:
+            return level
+        row_finder = EnemyInfo.loc[EnemyInfo["Name"] == name, "Difficulty"]  # finds the difficulty of mon using name
+
+        if "easy" in row_finder.values:
             lvl = random.randint(1, 4)
             return lvl
-        if name in medium:
+        if "medium" in row_finder.values:
             lvl = random.randint(5, 8)
+            return lvl
+        if "hard" in row_finder.values:
+            lvl = random.randint(9, 14)
+            return lvl
+        if "legendary" in row_finder.values:
+            lvl = random.randint(15, 20)
             return lvl
         else:
             lvl = 0
             return lvl
 
+    else:
+        return 0
+
 
 def name_maker(name):
-    if name in hotdog:
+    if name in type_dict["hotdog"]:
         return name
     else:
         random.shuffle(modifier)
@@ -127,7 +163,7 @@ class Monster:
             return info
 
     def combat_choice(self):
-        if self.charging:
+        if self.charging:  # if the enemy is charging an attack, it will do that attack.
             return self.charging[0]()
         else:
             random.shuffle(self.attacks)
