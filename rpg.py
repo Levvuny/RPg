@@ -130,6 +130,9 @@ class Player:
         return choice  # returns the choice so that other programs can use it
 
 
+class GameSystem:
+    def __init__(self):
+        pass
 #  Work on Monster class stuff more. A few more attacks to flesh it out a bit including a heavy attack which will
 #  add a reason to use the defence skill. add more non-combat encounters because that is something that currently
 #  would greatly benefit the game by adding experiences that will change how game goes. finish rest, cooking thing (inv)
@@ -137,6 +140,8 @@ class Player:
 #  like what player will more often find, power of monsters, element powers, etc.
 
 #  Add a way for player to explore the world with a map or some kind of road that the player goes down.
+# figure out a small bit of api, so I can use Google sheets, if possible. if not, figure out another way to implement
+# apis so that I can learn how to use them. get the basic loop of fighting and encounters down.
 
 #  After that add a few random characters that player can either fight or help????
 #  after that add xp system so fighting also adds experience for people going in that direction.
@@ -162,6 +167,11 @@ def stat_saver():  # will save the player info to text files
     player_info = json.dumps(player.__dict__)
     player_data.write(player_info)
     player_data.close()
+
+    game_data = open("game-data.json", "w")
+    game_info = json.dumps(game.__dict__)
+    game_data.write(game_info)
+    game_data.close()
 
 
 def stat_roll():   # Rolls all the dice needed for one stat.
@@ -205,6 +215,12 @@ def stat_maker():
 def loading_system():
     player_data = open("player-data.json", "r+")
     file_test = player_data.read()
+
+    game_data = open("game-data.json", "r+")
+    game_file = game_data.read()
+    if game_data:
+        game.__dict__ = json.loads(game_file)
+        game_data.close()
 
     if file_test:
         player.__dict__ = json.loads(file_test)
@@ -264,26 +280,81 @@ def skill_definitions():  # A program to let player read what their skills do
             answer = input().lower()
 
 
+class Game:  # trying to make the game run as a class
+    def __init__(self):
+        self.commands = ["options", "continue", "save", "quit", "skills", "stats"]
+        self.knowledge = []
+
+    def options(self):
+        options = self.commands + self.knowledge
+        for commands in options:
+            print(commands)
+
+    def turn_choice(self):
+        response = input("What do you want to do?\n").lower()
+        options = self.commands + self.knowledge
+        while response not in options:
+            print("Type 'options' to see commands")
+            response = input().lower()
+
+        if response == "options":
+            self.options()
+
+        if response == "save":
+            stat_saver()
+
+        if response == "quit":
+            stat_saver()
+            exit()
+
+        if response == "skills":
+            skill_definitions()
+
+        if response == "stats":
+            print(json.dumps(player.__dict__, indent=4))
+
+        if response == "continue":
+            random.shuffle(player.knownMonsters)
+            randMon = enemies.enemy_definers(player.knownMonsters[0])
+            encounters.basic_dialogue(player, randMon, self)
+            fate = random.randint(1, 2)
+
+            if fate == 1:
+                combat.combat(player, randMon)
+            if fate == 2:
+                encounters.encounter_decider(player, randMon, game)
+
+
+
+
+
+
+
+
+game = Game()
 player = Player()
 loading_system()
 
-command = input("what do you want to do?\n").lower()
-while command != "quit":
+while player.status["health"] > 0:
+    game.turn_choice()
 
-    if command == "fight":
-        random.shuffle(player.knownMonsters)
-        combat.combat(player, enemies.enemy_definers(player.knownMonsters[0]))
-
-    if command == "encounter":
-        randMon = enemies.enemy_definers(player.knownMonsters[0])
-        encounters.old_man(player, randMon)
-
-    if command == "skills":
-        skill_definitions()
-
-    if command == "stats":
-        print(player.__dict__)
-
-    command = input().lower()
+# command = input("what do you want to do?\n").lower()
+# while command != "quit":
+#
+#     if command == "fight":
+#         random.shuffle(player.knownMonsters)
+#         combat.combat(player, enemies.enemy_definers(player.knownMonsters[0]))
+#
+#     if command == "encounter":
+#         randMon = enemies.enemy_definers(player.knownMonsters[0])
+#         encounters.old_man(player, randMon, game)
+#
+#     if command == "skills":
+#         skill_definitions()
+#
+#     if command == "stats":
+#         print(json.dumps(player.__dict__, indent=4))
+#
+#     command = input().lower()
 
 stat_saver()

@@ -15,7 +15,12 @@ monsterNames = []
 
 for x in EnemyInfo["Name"]:
     monsterNames.append(x)
-# monsterNames = ["goblin", "boar", "cow", "giant spider", "changeling", "shadow", "skeleton"]
+
+
+def encounter_decider(player, enemy, game):
+    encounter_list = [old_man, short_rest, sunny_road]
+    random.shuffle(encounter_list)
+    return encounter_list[0](player, enemy, game)
 
 
 def d20():  # a basic d20 that also tells for critical fails/successes.
@@ -30,7 +35,7 @@ def d20():  # a basic d20 that also tells for critical fails/successes.
         return d20_roll
 
 
-def basic_dialogue(player, enemy):
+def basic_dialogue(player, enemy, game):
     option = random.randint(1, 10)
     if option == 1:
         print("You see a squirrel run around an ancient oak tree.")
@@ -47,25 +52,39 @@ def basic_dialogue(player, enemy):
         print("A wild boar crosses your path. It looks at you with deep, unknowing eyes and slowly walks away.")
         if "boar" not in player.knownMonsters:
             player.knownMonsters.append("boar")
+    elif option == 6:
+        random_thing = ["your mother", "a lizard", "a... tree", "Greg"]
+        random.shuffle(random_thing)
+        print(f"You pass by a tree that kind of looks like {random_thing[0]}.")
+    elif option == 7:
+        vowels = ["a", "e", "i", "o", "u"]
+        if enemy.name[0:1] in vowels:  # grammar is good
+            grammar = "an"
+        else:
+            grammar = "a"
+        print(f'You see {grammar} {enemy.name}. You named it John')
+
 
 
 def lonely_inn():  # locations that player can revisit as they explore more of the world
     pass
 
 
-def damaged_bridge(player, enemy):
+def damaged_bridge(player, enemy, game):
     pass
 
 
-def stormy_night(player, enemy):
+def stormy_night(player, enemy, game):
     pass
 
 
-def fire_shrine():
+def fire_shrine(player, enemy, game):
     pass
 
 
-def sunny_road(player, enemy):  # small events like this that just happen, small thing happens one or two options
+def sunny_road(player, enemy, game):  # small events like this that just happen, small thing happens one or two options
+    placeholder = enemy
+
     if random.randint(1, 20) + player.stat_ability["cha"] >= 11:
         print("The sun shines brightly down on you. What a lovely day.\n(+ 1 health)")
         if player.status["health"] < player.status["max_health"]:
@@ -74,15 +93,15 @@ def sunny_road(player, enemy):  # small events like this that just happen, small
         print("The sun is bright today.\n")
 
 
-def smokey_camp():
+def smokey_camp(player, enemy, game):
     pass
 
 
-def buried_house():  # lore areas
+def buried_house(player, enemy, game):  # lore areas
     pass
 
 
-def short_rest(player, enemy):
+def short_rest(player, enemy, game):
     d20r = random.randint(1, 20)
     wisdom_roll = d20r + player.stat_ability["wis"]
     if d20r == 1:
@@ -99,7 +118,7 @@ def short_rest(player, enemy):
         time.sleep(3)
         print("As you get up to continue your journey, the statue continues to point towards the horizon forever more.")
         player.status["health"] = player.status["max_health"]
-        player.knowledge.append("Frowning King")
+        game.knowledge.append("Frowning King")
         player.status["poison"] = 0
         return
 
@@ -126,7 +145,7 @@ def short_rest(player, enemy):
         return
 
 
-def old_man(player, enemy,):
+def old_man(player, enemy, game):
     answer = input("You meet an old man resting by the side of the road. What do you do?\nApproach/Leave\n")
     answer = answer.lower()
     answers = ["approach", "leave"]

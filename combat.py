@@ -101,7 +101,10 @@ def damage_dealer(enemy, info):  # takes a dict from enemies attacks to see what
             enemy.status["health"] -= info["damage"]
             if info["debuff_turns"]:
                 enemy.status[info["damage_type"]] += info["debuff_turns"]
-            print(info["success_hit"] + f' {info["damage"]} damage!')
+            if info["damage_type"] == "charging":
+                print(info["success_hit"])
+            else:
+                print(info["success_hit"] + f' {info["damage"]} damage!')
 
 
 def stat_reset(player, ac):
@@ -121,6 +124,7 @@ def combat(player, enemy):
     real_ac = player.status["ac"]
     if enemy.name == "greg":
         print("GREG THE HOTDOG SALESMAN IS HERE TO SEE YOU")
+        player.knownMonsters.remove("greg")
 
     else:
         vowels = ["a", "e", "i", "o", "u"]

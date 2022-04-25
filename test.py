@@ -137,8 +137,8 @@ class Player:
 #  like what player will more often find, power of monsters, element powers, etc.
 
 #  Add a way for player to explore the world with a map or some kind of road that the player goes down.
-# figure out a small bit of api so I can use google sheets, if possible. if not, figure out another way to implement
-# apis so that i can learn how to use them. get the basic loop of fighting and encounters down.
+# figure out a small bit of api, so I can use Google sheets, if possible. if not, figure out another way to implement
+# apis so that I can learn how to use them. get the basic loop of fighting and encounters down.
 
 #  After that add a few random characters that player can either fight or help????
 #  after that add xp system so fighting also adds experience for people going in that direction.
