@@ -63,6 +63,32 @@ def enemy_definers(name, lvl=0):  # returns type of monster based on their type 
         return Monster(name, lvl)
 
 
+def loot_info(name):  # is used to get the loot for when monster slain
+
+    LootSheet = requests.get(
+        "https://sheets.googleapis.com/v4/spreadsheets/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8"
+        "/values/Sheet2?key=AIzaSyB5DWWVzSER7OpXYIFVuhq0KysBzQocy7U")
+    LootSheet = LootSheet.json()  # api innit
+
+    if name in EnemyInfo["Name"].values:  # is getting the info so that it can call the specific loot item
+        info = EnemyInfo.loc[EnemyInfo["Name"] == name, "Loot"]
+        info = list(info)
+        info = info[0].split(",")  # getting numbers seperated so that it can be used as a range
+        randomLoot = random.randint(int(info[0]), int(info[1]))  # takes loot number from monster info and randomizes
+
+        loot = LootSheet["values"][randomLoot]
+        amount = loot[1]
+        amount = list(amount.split(", "))  # splits it by getting rid of space and comma and only leaves number values
+        amount = random.randint(int(amount[0]), int(amount[1]))  # uses numbers to generate amount of loot
+
+        LootList = [loot[0], amount]
+
+        return LootList
+
+    else:  # no name no loot XD
+        return
+
+
 def level_setter(name, level):  # will set the monster level if not already set by specific number
     if name in EnemyInfo["Name"].values:
         if level != 0:
@@ -118,6 +144,7 @@ class Monster:
         self.resistance = []
         self.attacks = [self.basic_attack]
         self.charging = []
+        self.loot = loot_info(name)
 
     def health_def(self, name):
         if name in EnemyInfo["Name"].values:

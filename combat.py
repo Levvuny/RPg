@@ -119,6 +119,15 @@ def stat_reset(player, ac):
         player.status["health"] = player.status["max_health"]
 
 
+def looting(player, enemy):
+    if enemy.loot:
+        if enemy.loot[0] in player.inv:
+            player.inv[enemy.loot[0]] += enemy.loot[1]
+
+        else:
+            player.inv.update({enemy.loot[0]: enemy.loot[1]})
+
+
 def combat(player, enemy):
 
     real_ac = player.status["ac"]

@@ -77,20 +77,20 @@ spells = spells.json()
 # print(spells["desc"])
 
 acid_spells = []
-print(spells["results"][0])
-type = input("What type of spell?\n")
-for value in range(len(spells["results"])):
-    # print(spells["results"][value]["name"])
-    if type in (spells["results"][value]["name"]).lower():
-        acid_spells.append(spells["results"][value]["url"])
-print(acid_spells)
-url_base = "https://www.dnd5eapi.co"
-
-for spells in acid_spells:
-    url = url_base + spells
-    spell = requests.get(url)
-    spell = spell.json()
-    print(spell["name"])
-    print(spell["desc"])
-    print("")
-
+# print(spells["results"][0])
+# type = input("What type of spell?\n")
+# for value in range(len(spells["results"])):
+#     # print(spells["results"][value]["name"])
+#     if type in (spells["results"][value]["name"]).lower():
+#         acid_spells.append(spells["results"][value]["url"])
+# print(acid_spells)
+# url_base = "https://www.dnd5eapi.co"
+#
+# for spells in acid_spells:
+#     url = url_base + spells
+#     spell = requests.get(url)
+#     spell = spell.json()
+#     print(spell["name"])
+#     print(spell["desc"])
+#     print("")
+#

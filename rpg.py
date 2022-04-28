@@ -44,9 +44,13 @@ class Player:
             "defense": 0,
             "power": 0,
         }
+        self.inv = {
+            "coins": 0,
+            "wood": 0,
+        }
         self.knownMonsters = ["slime"]
         self.knowledge = []
-        self.resistance = ["fire"]
+        self.resistance = []
 
     def stat_reset(self):
         health = random.randint(1, 8) + self.stat_ability["con"]
@@ -130,9 +134,6 @@ class Player:
         return choice  # returns the choice so that other programs can use it
 
 
-class GameSystem:
-    def __init__(self):
-        pass
 #  Work on Monster class stuff more. A few more attacks to flesh it out a bit including a heavy attack which will
 #  add a reason to use the defence skill. add more non-combat encounters because that is something that currently
 #  would greatly benefit the game by adding experiences that will change how game goes. finish rest, cooking thing (inv)
@@ -169,7 +170,7 @@ def stat_saver():  # will save the player info to text files
     player_data.close()
 
     game_data = open("game-data.json", "w")
-    game_info = json.dumps(game.__dict__)
+    game_info = json.dumps(game.knowledge)
     game_data.write(game_info)
     game_data.close()
 
@@ -219,7 +220,7 @@ def loading_system():
     game_data = open("game-data.json", "r+")
     game_file = game_data.read()
     if game_data:
-        game.__dict__ = json.loads(game_file)
+        game.knowledge = json.loads(game_file)
         game_data.close()
 
     if file_test:
@@ -282,22 +283,32 @@ def skill_definitions():  # A program to let player read what their skills do
 
 class Game:  # trying to make the game run as a class
     def __init__(self):
-        self.commands = ["options", "continue", "save", "quit", "skills", "stats"]
+        self.commands = ["options", "continue", "save", "quit", "skills", "stats", "?"]
         self.knowledge = []
 
     def options(self):
-        options = self.commands + self.knowledge
+        options = self.commands
+        if self.knowledge:
+            if "travel" not in options:
+                options.append("travel")
         for commands in options:
             print(commands)
 
     def turn_choice(self):
+        random.shuffle(player.knownMonsters)
+        randMon = enemies.enemy_definers(player.knownMonsters[0])
+
         response = input("What do you want to do?\n").lower()
-        options = self.commands + self.knowledge
+        options = self.commands
+        if self.knowledge:
+            if "travel" not in options:
+                options.append("travel")
+
         while response not in options:
             print("Type 'options' to see commands")
             response = input().lower()
 
-        if response == "options":
+        if response == "?" or response == "options":
             self.options()
 
         if response == "save":
@@ -313,9 +324,23 @@ class Game:  # trying to make the game run as a class
         if response == "stats":
             print(json.dumps(player.__dict__, indent=4))
 
-        if response == "continue":
-            random.shuffle(player.knownMonsters)
-            randMon = enemies.enemy_definers(player.knownMonsters[0])
+        if response == "travel":  # knowledge areas
+
+            print("Where do you want to go?")
+            for item in self.knowledge:
+                print(item)
+
+            choice = input().lower()
+            while choice not in self.knowledge:
+                choice = input("Please pick a valid option").lower()
+
+            if choice == "bridge":
+                encounters.damaged_bridge(player, randMon, game)
+
+            if choice == "meadow":
+                encounters.meadow(player, randMon, game)
+
+        if response == "continue":  # this is like most of the program lol
             encounters.basic_dialogue(player, randMon, self)
             fate = random.randint(1, 2)
 
@@ -334,6 +359,25 @@ class Game:  # trying to make the game run as a class
 game = Game()
 player = Player()
 loading_system()
+
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
+combat.looting(player, enemies.enemy_definers(player.knownMonsters[0]))
 
 while player.status["health"] > 0:
     game.turn_choice()

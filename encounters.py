@@ -18,7 +18,7 @@ for x in EnemyInfo["Name"]:
 
 
 def encounter_decider(player, enemy, game):
-    encounter_list = [old_man, short_rest, sunny_road]
+    encounter_list = [old_man, short_rest, sunny_road, damaged_bridge_encounter]
     random.shuffle(encounter_list)
     return encounter_list[0](player, enemy, game)
 
@@ -70,8 +70,54 @@ def lonely_inn():  # locations that player can revisit as they explore more of t
     pass
 
 
-def damaged_bridge(player, enemy, game):
-    pass
+def damaged_bridge_encounter(player, enemy, game):  # shows the bridge area and allows player to come back.
+    if "bridge" in game.knowledge:
+        return basic_dialogue(player, enemy, game)
+
+    print("You come to a raging river that seems too terrifying to try to ford. You can see a relaxing meadow full of")
+    print("fruit trees on the other side, but the bridge to it is far too damaged to cross. Maybe if you bring some")
+    print("wood to fix it you can see the other side.")
+
+    game.knowledge.append("bridge")
+
+    return
+
+
+def damaged_bridge(player, enemy, game):  # is only available till bridge is fixed
+    options = ["repair", "gaze", "leave"]
+    print("You return to the broken bridge. What do you want to do?")
+    for i in options:
+        print(i)
+    answer = input().lower()
+    while answer != "leave":
+
+        if answer not in options:
+            answer = input("Please put a valid option\n").lower()
+
+        if answer == "gaze":
+            print("You stare at where you want to be, but will you do anything to get there?")
+            answer = input().lower()
+
+        if answer == "repair":
+            if player.inv["wood"] > 10:
+                print("You spend the whole day fixing the bridge. It isn't the most beautiful work, but you")
+                print("successfully repair the broken bridge and are able to access the other side.")
+
+                game.knowledge.remove("bridge")
+                game.knowledge.append("meadow")
+                return
+
+            else:
+                print("You have the ambition, but not the resources. You should get some wood to repair it.")
+                answer = input().lower()
+
+    if answer == "leave":
+        print("You leave the bridge. There's plenty of other places to go.")
+        return
+
+
+def meadow(player, enemy, game):
+    print("You made it to the meadow.")
 
 
 def stormy_night(player, enemy, game):
