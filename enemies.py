@@ -7,6 +7,11 @@ EnemySheet = requests.get("https://sheets.googleapis.com/v4/spreadsheets/1_Ym0mi
 
 EnemySheet = EnemySheet.json()
 
+LootSheet = requests.get(
+    "https://sheets.googleapis.com/v4/spreadsheets/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8"
+    "/values/Sheet2?key=AIzaSyB5DWWVzSER7OpXYIFVuhq0KysBzQocy7U")
+LootSheet = LootSheet.json()  # the data for loot information
+
 EnemyInfo = pd.DataFrame(EnemySheet["values"], columns=EnemySheet["values"][0])
 EnemyInfo.drop(index=0, inplace=True)
 
@@ -64,11 +69,6 @@ def enemy_definers(name, lvl=0):  # returns type of monster based on their type 
 
 
 def loot_info(name):  # is used to get the loot for when monster slain
-
-    LootSheet = requests.get(
-        "https://sheets.googleapis.com/v4/spreadsheets/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8"
-        "/values/Sheet2?key=AIzaSyB5DWWVzSER7OpXYIFVuhq0KysBzQocy7U")
-    LootSheet = LootSheet.json()  # api innit
 
     if name in EnemyInfo["Name"].values:  # is getting the info so that it can call the specific loot item
         info = EnemyInfo.loc[EnemyInfo["Name"] == name, "Loot"]
