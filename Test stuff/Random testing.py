@@ -1,8 +1,4 @@
-import pandas as pd
-import random
-import requests
-import json
-#
+
 # EnemySheet = requests.get("https://sheets.googleapis.com/v4/spreadsheets/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8/values/Sheet1?key=AIzaSyB5DWWVzSER7OpXYIFVuhq0KysBzQocy7U")
 #
 # EnemySheet = EnemySheet.json()
@@ -95,7 +91,7 @@ import json
 # #     print("")
 # #
 import cv2
-import numpy
+import numpy as np
 import matplotlib
 
 
@@ -122,10 +118,77 @@ import matplotlib
 # cv2.destroyAllWindows()
 
 
-img = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-te, imge = img.read()
-cv2.imwrite("test_img.png", imge)
-image = cv2.imread("test_img.png", cv2.IMREAD_GRAYSCALE)
-cv2.imshow("image", image)
+# img = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+# te, imge = img.read()
+# cv2.imwrite("test_img.png", imge)
+# image = cv2.imread("test_img.png", cv2.IMREAD_GRAYSCALE)
+# cv2.imshow("image", image)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+
+# cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+# # fourcc = cv2.VideoWriter_fourcc(*'XVID')
+# # out = cv2.VideoWriter('output.avi', fourcc, 20.0, (640,480))
+# pts = np.array(([20, 20], [50, 50], [100, 199]), np.int32)
+# # pts = pts.reshape((-1, 1, 2))
+# font = cv2.FONT_HERSHEY_SIMPLEX
+# hi, mom = cap.read()
+# pic = mom
+#
+# while True:
+#     ret, frame = cap.read()
+#     pic += frame
+#     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+#     # out.write(frame)
+#     # cv2.circle(gray, (350, 200), 50, (255, 0, 0))
+#
+#     # cv2.putText(frame, "Hello, mother", (300, 40), font, 1, (200, 100, 200))
+#     # cv2.polylines(gray, [pts], True, (255, 0, 0))
+#     cv2.imshow("gray", gray)
+#
+#     cv2.imshow("color", frame)
+#     rec = frame[250:400, 150:300]
+#     frame[0:150, 0:150] = rec
+#     cv2.rectangle(frame, (250, 150), (400, 300), (0, 0, 255), 5)
+#     cv2.imshow("line", frame)
+#
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#         break
+#
+# cap.release()
+# # # out.release()
+# cv2.destroyAllWindows()
+# cv2.imshow("o", pic)
+
+img1 = cv2.imread("test_img.png", cv2.IMREAD_COLOR)
+img2 = cv2.imread("test_img2.png", cv2.IMREAD_COLOR)
+ooo = cv2.add(img1, img2)
+cv2.imshow("s", ooo)
+cv2.waitKey(0)
+img3 = cv2.imread("politefroggo_2_112x1122.png", cv2.IMREAD_COLOR)
+
+rows, cols, channels = img3.shape
+roi = img1[0:rows, 0:cols]  # roi = range of interest
+
+gray = cv2.cvtColor(img3, cv2.COLOR_BGR2GRAY)
+cv2.imshow("s", gray)
+ret, mask = cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY)
+
+cv2.imshow("mask", mask)
+
+mask_inv = cv2.bitwise_not(mask)
+cv2.imshow("e",mask_inv)
+
+img1_bg = cv2.bitwise_and(roi, roi, mask=mask_inv)
+cv2.imshow("d", img1_bg)
+img3_fg = cv2.bitwise_and(img3, img3, mask=mask)
+cv2.imshow("dd", img3_fg)
+
+dst = cv2.add(img1_bg, img3_fg)
+cv2.imshow(":D", dst)
+img1[0:rows, 0:cols] = dst
+
+cv2.imshow("img", img1)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
