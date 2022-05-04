@@ -6,247 +6,88 @@ import time
 
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
-ret, frame = cap.read()
-A = frame
-one = frame
+number = input("How many frames per shot?\n")
+divide = input("How much do you want to divide it?\n")
+list_amount = []
+number = int(number)
+for n in range(number):
+    list_amount.append(n)
 
-ret, frame = cap.read()
+def crack_starter():
+    for item in range(len(list_amount)):
+        ret, frame = cap.read()
+        if ret:
+            new_frame = frame // int(divide)
+            frame = new_frame
+            list_amount[item] = frame
 
-one += frame
-two = frame
 
-ret, frame = cap.read()
+def data_changer(key):
+    global divide
+    if key == 119:
+        divide = int(divide) + 1
+        return
 
-one += frame
-two += frame
-three = frame
+    if key == 115:
+        if int(divide) > 0:
+            divide = int(divide) - 1
+            int(divide)
+            return
 
-ret, frame = cap.read()
+        else:
+            return
 
-one += frame
-two += frame
-three += frame
-four = frame
+    if key == 43:
+        ret, frame = cap.read()
+        if ret:
+            new_frame = frame // int(divide)
+            frame = new_frame
+            list_amount.append(frame)
+            return
 
-ret, frame = cap.read()
+    if key == 45:
+        if len(list_amount) == 1:
+            return
 
-one += frame
-two += frame
-three += frame
-four += frame
-five = frame
+        else:
+            list_amount.pop()
+            return
 
-ret, frame = cap.read()
 
-one += frame
-two += frame
-three += frame
-four += frame
-five += frame
-six = frame
 
-ret, frame = cap.read()
+def crack():
+    crack_starter()
+    global key
+    while True:
 
-one += frame
-two += frame
-three += frame
-four += frame
-five += frame
-six += frame
-seven = frame
+        for item in range(len(list_amount)):
 
-ret, frame = cap.read()
+            ret, frame = cap.read()
+            if ret:
+                new_frame = frame // int(divide)
+                frame = new_frame
+                list_amount[item] = frame
+            for items in range(len(list_amount)):
+                if items != item:
 
-one += frame
-two += frame
-three += frame
-four += frame
-five += frame
-six += frame
-seven += frame
-eight = frame
+                    list_amount[items] += list_amount[item]
 
-ret, frame = cap.read()
+            if (item + 1) in range(len(list_amount)):
+                mod = item + 1
+            else:
+                mod = 0
 
-one += frame
-two += frame
-three += frame
-four += frame
-five += frame
-six += frame
-seven += frame
-eight += frame
-nine = frame
+            all = frame + list_amount[mod]
+            cv2.imshow("crackhead", all)
+            key = cv2.waitKey(1) & 0xFF
 
-ret, frame = cap.read()
 
-one += frame
-two += frame
-three += frame
-four += frame
-five += frame
-six += frame
-seven += frame
-eight += frame
-nine += frame
-ten = frame
+        print(key)
+        if key == 119 or key == 115 or key == 43 or key == 45:
+            data_changer(key)
+        if key == ord('q'):
+            break
 
-while True:
-    ret, frame = cap.read()
-    A = frame + two
-    two += frame
-    three += frame
-    four += frame
-    five += frame
-    six += frame
-    seven += frame
-    eight += frame
-    nine += frame
-    ten += frame
-    one = frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
 
-    ret, frame = cap.read()
-    A = frame + three
-    one += frame
-    three += frame
-    four += frame
-    five += frame
-    six += frame
-    seven += frame
-    eight += frame
-    nine += frame
-    ten += frame
-    two = frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
 
-    ret, frame = cap.read()
-    A = frame + four
-    one += frame
-    two += frame
-    four += frame
-    five += frame
-    six += frame
-    seven += frame
-    eight += frame
-    nine += frame
-    ten += frame
-    three = frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
-
-    ret, frame = cap.read()
-    A = frame + five
-    one += frame
-    two += frame
-    three += frame
-    five += frame
-    six += frame
-    seven += frame
-    eight += frame
-    nine += frame
-    ten += frame
-    four = frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
-
-    ret, frame = cap.read()
-    A = frame + six
-    one += frame
-    two += frame
-    three += frame
-    four += frame
-    six += frame
-    seven += frame
-    eight += frame
-    nine += frame
-    ten += frame
-    five = frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
-
-    ret, frame = cap.read()
-    A = frame + seven
-    one += frame
-    two += frame
-    three += frame
-    four += frame
-    five += frame
-    seven += frame
-    eight += frame
-    nine += frame
-    ten += frame
-    six = frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
-
-    ret, frame = cap.read()
-    A = frame + eight
-    one += frame
-    two += frame
-    three += frame
-    four += frame
-    five += frame
-    six += frame
-    eight += frame
-    nine += frame
-    ten += frame
-    seven = frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
-
-    ret, frame = cap.read()
-    A = frame + nine
-    one += frame
-    two += frame
-    three += frame
-    four += frame
-    five += frame
-    six += frame
-    seven += frame
-    eight = frame
-    nine += frame
-    ten += frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
-
-    ret, frame = cap.read()
-    A = frame + ten
-    one += frame
-    two += frame
-    three += frame
-    four += frame
-    five += frame
-    six += frame
-    seven += frame
-    eight += frame
-    nine = frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
-
-    ret, frame = cap.read()
-    A = frame + one
-    one += frame
-    two += frame
-    three += frame
-    four += frame
-    five += frame
-    six += frame
-    seven += frame
-    eight += frame
-    nine += frame
-    ten = frame
-    cv2.imshow("f", A)
-    cv2.waitKey(1)
-
-# while True:
-#     ret, frame = cap.read()
-#     ree = frame
-#
-#     for x in range(2):
-#         ret, frame = cap.read()
-#         ree += frame
-#     cv2.imshow("test", ree)
-#     cv2.waitKey(1)
+crack()

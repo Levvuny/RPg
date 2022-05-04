@@ -163,8 +163,8 @@ import matplotlib
 
 img1 = cv2.imread("test_img.png", cv2.IMREAD_COLOR)
 img2 = cv2.imread("test_img2.png", cv2.IMREAD_COLOR)
-ooo = cv2.add(img1, img2)
-cv2.imshow("s", ooo)
+
+
 cv2.waitKey(0)
 img3 = cv2.imread("politefroggo_2_112x1122.png", cv2.IMREAD_COLOR)
 
