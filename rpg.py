@@ -52,7 +52,7 @@ class Player:
         self.knowledge = []
         self.resistance = []
 
-    def stat_reset(self):
+    def stat_reset(self):  # maybe I need a different spot to store it all...
         health = random.randint(1, 8) + self.stat_ability["con"]
         self.status = {
             "health": health,
@@ -76,6 +76,9 @@ class Player:
         self.knownMonsters.clear()
         self.knownMonsters.append("slime")
         self.knowledge.clear()
+        self.inv = {
+
+        }
 
     def ability_modifier_maker(self):  # takes the numbers from stats and transforms them into ability modifiers.
         keys = []
@@ -139,6 +142,7 @@ class Player:
 #  would greatly benefit the game by adding experiences that will change how game goes. finish rest, cooking thing (inv)
 #  worn down houses on the road, OH little shrines that how score checks and interactions do with them change stuff
 #  like what player will more often find, power of monsters, element powers, etc.
+# get a staff, can cast concussion (hits with staff)
 
 #  Add a way for player to explore the world with a map or some kind of road that the player goes down.
 # figure out a small bit of api, so I can use Google sheets, if possible. if not, figure out another way to implement
@@ -238,8 +242,10 @@ def loading_system():
                 print("please enter \'yes\' or \'no\'")
 
         if file_answer != "yes":
+            game.knowledge.clear()
             stat_maker()  # new load out!
     else:
+        game.knowledge.clear()
         stat_maker()  # new load out!
 
 
@@ -280,10 +286,10 @@ def skill_definitions():  # A program to let player read what their skills do
             print("Please put a valid option.")
             answer = input().lower()
 
-
+import Items
 class Game:  # trying to make the game run as a class
     def __init__(self):
-        self.commands = ["options", "continue", "save", "quit", "skills", "stats", "?"]
+        self.commands = ["options", "continue", "save", "quit", "skills", "stats", "?", "inv", "inventory"]
         self.knowledge = []
 
     def options(self):
@@ -324,6 +330,13 @@ class Game:  # trying to make the game run as a class
         if response == "stats":
             print(json.dumps(player.__dict__, indent=4))
 
+        if response == "inv" or response == "inventory":
+
+            for x in player.inv:
+                print(f'{x} : {player.inv[x]}')
+
+            # should each type of item be a class... such as "usables, equipables, craftables????
+
         if response == "travel":  # knowledge areas
 
             print("Where do you want to go?")
@@ -332,7 +345,7 @@ class Game:  # trying to make the game run as a class
 
             choice = input().lower()
             while choice not in self.knowledge:
-                choice = input("Please pick a valid option").lower()
+                choice = input("Please pick a valid option\n").lower()
 
             if choice == "bridge":
                 encounters.damaged_bridge(player, randMon, game)
@@ -350,16 +363,9 @@ class Game:  # trying to make the game run as a class
                 encounters.encounter_decider(player, randMon, game)
 
 
-
-
-
-
-
-
 game = Game()
 player = Player()
 loading_system()
-
 
 
 while player.status["health"] > 0:

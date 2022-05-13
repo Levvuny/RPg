@@ -71,7 +71,7 @@ def lonely_inn():  # locations that player can revisit as they explore more of t
 
 
 def damaged_bridge_encounter(player, enemy, game):  # shows the bridge area and allows player to come back.
-    if "bridge" in game.knowledge:
+    if "bridge" in game.knowledge or "meadow" in game.knowledge:
         return basic_dialogue(player, enemy, game)
 
     print("You come to a raging river that seems too terrifying to try to ford. You can see a relaxing meadow full of")
@@ -99,7 +99,8 @@ def damaged_bridge(player, enemy, game):  # is only available till bridge is fix
             answer = input().lower()
 
         if answer == "repair":
-            if player.inv["wood"] > 10:
+            if player.inv["wood"] >= 10:
+                player.inv["wood"] -= 10
                 print("You spend the whole day fixing the bridge. It isn't the most beautiful work, but you")
                 print("successfully repair the broken bridge and are able to access the other side.")
 
@@ -118,6 +119,7 @@ def damaged_bridge(player, enemy, game):  # is only available till bridge is fix
 
 def meadow(player, enemy, game):
     print("You made it to the meadow.")
+
 
 
 def stormy_night(player, enemy, game):

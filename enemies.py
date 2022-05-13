@@ -81,7 +81,7 @@ def loot_info(name):  # is used to get the loot for when monster slain
         amount = list(amount.split(", "))  # splits it by getting rid of space and comma and only leaves number values
         amount = random.randint(int(amount[0]), int(amount[1]))  # uses numbers to generate amount of loot
 
-        LootList = [loot[0], amount]
+        LootList = [int(loot[0]), amount]
 
         return LootList
 
@@ -290,5 +290,3 @@ class SmurgusTheHotdogMan(Monster):
             "weak_hit": f'This message should never happen.'
         }
         return info
-
-

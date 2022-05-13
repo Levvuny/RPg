@@ -1,0 +1,47 @@
+{
+  "items": [
+        {
+      "id": 1,
+      "name": "coins",
+      "value": 1,
+      "type": 1,
+      "description": "It looks rather tasty. Eat the coin."
+    },
+    {
+      "id": 2,
+      "name": "wood",
+      "value": 5,
+      "type": 3,
+      "description": "It's wood."
+    },
+        {
+      "id": 3,
+      "name": "monster guts",
+      "value": 1,
+      "type": 3,
+      "description": "Why would you keep this?"
+    },
+            {
+      "id": 4,
+      "name": "ash",
+      "value": 0,
+      "type": 3,
+      "description": "You sure like keeping junk."
+    },
+                {
+      "id": 5,
+      "name": "cloth",
+      "value": 5,
+      "type": 3,
+      "description": "A plain and simple cloth. It seems pretty nice."
+    },
+                {
+      "id": 6,
+      "name": "hotdog",
+      "value": 0,
+      "type": 2,
+      "description": "It yearns to be consumed. (Heals 20)",
+      "heal": 20
+    }
+  ]
+}

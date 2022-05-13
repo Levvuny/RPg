@@ -161,34 +161,67 @@ import matplotlib
 # cv2.destroyAllWindows()
 # cv2.imshow("o", pic)
 
-img1 = cv2.imread("test_img.png", cv2.IMREAD_COLOR)
-img2 = cv2.imread("test_img2.png", cv2.IMREAD_COLOR)
+# img1 = cv2.imread("test_img.png", cv2.IMREAD_COLOR)
+# img2 = cv2.imread("test_img2.png", cv2.IMREAD_COLOR)
+#
+# cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+#
+# cv2.waitKey(0)
+# img3 = cv2.imread("politefroggo_2_112x1122.png", cv2.IMREAD_COLOR)
+# ret, img1 = cap.read()
+# rows, cols, channels = img3.shape
+# roi = img1[0:rows, 0:cols]  # roi = range of interest
+#
+# gray = cv2.cvtColor(img3, cv2.COLOR_BGR2GRAY)
+# cv2.imshow("s", gray)
+# ret, mask = cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY)
+#
+# cv2.imshow("mask", mask)
+#
+# mask_inv = cv2.bitwise_not(mask)
+# cv2.imshow("e",mask_inv)
+#
+# img1_bg = cv2.bitwise_and(roi, roi, mask=mask_inv)
+# cv2.imshow("d", img1_bg)
+# img3_fg = cv2.bitwise_and(img3, img3, mask=mask)
+# cv2.imshow("dd", img3_fg)
+#
+# dst = cv2.add(img1_bg, img3_fg)
+# cv2.imshow(":D", dst)
+# img1[0:rows, 0:cols] = dst
+#
+# cv2.imshow("img", img1)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+while (1):
+    _, frame = cap.read()
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
+    lower_red = np.array([30, 150, 50])
+    upper_red = np.array([255, 255, 180])
 
-cv2.waitKey(0)
-img3 = cv2.imread("politefroggo_2_112x1122.png", cv2.IMREAD_COLOR)
+    mask = cv2.inRange(hsv, lower_red, upper_red)
+    res = cv2.bitwise_and(frame, frame, mask=mask)
 
-rows, cols, channels = img3.shape
-roi = img1[0:rows, 0:cols]  # roi = range of interest
+    cv2.imshow('frame', frame)
+    cv2.imshow('mask', mask)
+    cv2.imshow('res', res)
 
-gray = cv2.cvtColor(img3, cv2.COLOR_BGR2GRAY)
-cv2.imshow("s", gray)
-ret, mask = cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY)
+    k = cv2.waitKey(5) & 0xFF
+    if k == 27:
+        break
 
-cv2.imshow("mask", mask)
+img = cv2.imread("bookpage.jpg")
+retval, threshold = cv2.threshold(img, 12, 255, cv2.THRESH_BINARY)
 
-mask_inv = cv2.bitwise_not(mask)
-cv2.imshow("e",mask_inv)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+retval2, threshold2 = cv2.threshold(gray, 12, 255, cv2.THRESH_BINARY)
+gaus = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 115, 1)
 
-img1_bg = cv2.bitwise_and(roi, roi, mask=mask_inv)
-cv2.imshow("d", img1_bg)
-img3_fg = cv2.bitwise_and(img3, img3, mask=mask)
-cv2.imshow("dd", img3_fg)
-
-dst = cv2.add(img1_bg, img3_fg)
-cv2.imshow(":D", dst)
-img1[0:rows, 0:cols] = dst
-
-cv2.imshow("img", img1)
+cv2.imshow("img", img)
+cv2.imshow("thr", threshold)
+cv2.imshow("t", threshold2)
+cv2.imshow("g", gaus)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

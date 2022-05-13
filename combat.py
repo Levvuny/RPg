@@ -1,5 +1,6 @@
 #  I am going to try to put the main combat system in here and call player and enemy into it.
 import random
+import json
 
 
 def d20():  # a basic d20 that also tells for critical fails/successes.
@@ -120,12 +121,20 @@ def stat_reset(player, ac):
 
 
 def looting(player, enemy):
+    loot_info = open("item-data.json", "r")
+    loot_info = loot_info.read()
+    loot_info = json.loads(loot_info)
+
+    loot_name = loot_info["items"][enemy.loot[0] - 1] # this is all just to get the right name
+
     if enemy.loot:
         if enemy.loot[0] in player.inv:
             player.inv[enemy.loot[0]] += enemy.loot[1]
 
         else:
             player.inv.update({enemy.loot[0]: enemy.loot[1]})
+
+        print(f'You collected {enemy.loot[1]} {loot_name["name"]} from the {enemy.name}.')
 
 
 def combat(player, enemy):
@@ -171,9 +180,10 @@ def combat(player, enemy):
                 damage_dealer(enemy, player.fire_punch(enemy))
 
         if enemy.health < 1:  # checks to see if player has defeated enemy yet
-            print(f'You defeated the {enemy.name}\n')
+            print(f'You defeated the {enemy.name}.')
             stat_reset(player, real_ac)
-            return
+            return looting(player, enemy)
+
         print(f'The {enemy.name} has {enemy.health} health left.\n')
 
         # ENEMY TURN START HERE
@@ -190,7 +200,7 @@ def combat(player, enemy):
 
         enemy_debuff_check(enemy)
         if enemy.health < 1:  # checks to see if player has defeated enemy yet
-            print(f'You defeated the {enemy.name}\n')
+            print(f'You defeated the {enemy.name}.')
             stat_reset(player, real_ac)
-            return
+            return looting(player, enemy)
 
