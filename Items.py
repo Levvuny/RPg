@@ -11,6 +11,10 @@ class Items:
     def examine(self):
         print(self.description)
 
+    def use(self, player, item):
+        print("You aren't sure what you want to do with this.")
+
+
 
 """
 types:
@@ -21,8 +25,14 @@ types:
 4 = armor
 5 = weapon
 """
+class Armor(Items):
+    def __init__(self, info):
+        super().__init__(info)
 
-
+class Weapon(Items):
+    def __init__(self, info):
+        super().__init__(info)
+        if
 class UseAbles(Items):
     def __init__(self, info):
         super().__init__(info)
@@ -35,11 +45,12 @@ class Food(UseAbles):
         self.heal = info["heal"]
         self.message = "You eat the " + self.name
 
-    def use(self, player):
+    def use(self, player, item):
         print(self.message)
-        player.health += self.heal
-        if player.health > player.max_health:
-            player.health = player.max_health
+        player.status["health"] += self.heal
+        if player.status["health"] > player.status["max_health"]:
+            player.status["health"] = player.status["max_health"]
+        player.inv[str(item)] -= 1
 
 
 class CraftAbles(UseAbles):
@@ -51,9 +62,10 @@ import json
 read = open("item-data.json", "r")
 read = json.loads(read.read())
 
-for x in read["items"]:
-    if x["type"] == 3:
-        y = CraftAbles(x)
-        print(y.name)
-
-
+def item_definer(info):
+    if info["type"] == 1:
+        return UseAbles(info)
+    if info["type"] == 2:
+        return Food(info)
+    if info["type"] == 3:
+        return CraftAbles(info)

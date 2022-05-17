@@ -37,11 +37,18 @@
     },
                 {
       "id": 6,
-      "name": "hotdog",
+      "name": "hotdogs",
       "value": 0,
       "type": 2,
       "description": "It yearns to be consumed. (Heals 20)",
       "heal": 20
+    },
+                    {
+      "id": 7,
+      "name": "small health potion",
+      "value": 5,
+      "type": 2,
+      "description": "For use when no other option seems to help."
     }
   ]
 }

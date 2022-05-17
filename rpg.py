@@ -45,8 +45,6 @@ class Player:
             "power": 0,
         }
         self.inv = {
-            "coins": 0,
-            "wood": 0,
         }
         self.knownMonsters = ["slime"]
         self.knowledge = []
@@ -300,6 +298,61 @@ class Game:  # trying to make the game run as a class
         for commands in options:
             print(commands)
 
+    def inventory(self):
+        read = open("item-data.json", "r")
+        read = json.loads(read.read())
+
+        inv_list = []
+        inv_item_new = None  # this is all just so that I can get the name and show it to player.
+        for inv_item in player.inv:  # cycles through the players items and adds them into a list
+            copy_item = int(inv_item)  # copies it for further use
+            for items in read["items"]:  # cycles through item data
+                if items["id"] == copy_item:  # now is checking if each inventory item id has item data
+                    inv_item_new = items  # gives inv_item_new all the data from that item
+            print(f'{inv_item_new["name"]} : {player.inv[inv_item]}')  # uses the name and amount and prints
+
+            inv_list.append(Items.item_definer(inv_item_new))  # gets item data into a list
+
+        examine_options = {}
+        for x in inv_list:  # this is used so players can choose the names of items
+            name = x.name
+            examine_options[name] = x  # makes a dictionary. each name = the entire item data
+
+        item_name = []  # this is used to let the answer see
+        for x in examine_options.keys():
+            item_name.append(x)
+
+        print("You can either examine an item, use an item, equip an item, delete an item, or exit")  # add delete?
+        option = input().lower()
+        while option != "exit":  # will let players mess with inventory.
+
+            if option == "examine":
+                print("What do you want to examine?")
+                answer = input().lower()
+
+                while answer not in item_name:  # select thy poison
+                    if answer == "exit":
+                        break
+                    answer = input("Please pick a valid option\n").lower()
+                if answer in item_name:
+                    examine_options[answer].examine()
+
+            if option == "use":
+                print("What do you want to use?")
+                answer = input().lower()
+
+                while answer not in item_name:  # select thy poison
+                    if answer == "exit":
+                        break
+                    answer = input("Please pick a valid option\n").lower()
+
+                if answer in item_name:
+                    examine_options[answer].use(player, examine_options[answer].id)
+
+            if option == "delete":
+
+            option = input("Type 'exit' to leave or select another option\n").lower()
+
     def turn_choice(self):
         random.shuffle(player.knownMonsters)
         randMon = enemies.enemy_definers(player.knownMonsters[0])
@@ -331,10 +384,7 @@ class Game:  # trying to make the game run as a class
             print(json.dumps(player.__dict__, indent=4))
 
         if response == "inv" or response == "inventory":
-
-            for x in player.inv:
-                print(f'{x} : {player.inv[x]}')
-
+            self.inventory()
             # should each type of item be a class... such as "usables, equipables, craftables????
 
         if response == "travel":  # knowledge areas
