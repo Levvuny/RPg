@@ -49,6 +49,14 @@ class Player:
         self.knownMonsters = ["slime"]
         self.knowledge = []
         self.resistance = []
+        self.equip = {
+            "head": None,
+            "body": None,
+            "legs": None,
+            "boots": None,
+            "arms": None,
+            "weapon": None
+        }
 
     def stat_reset(self):  # maybe I need a different spot to store it all...
         health = random.randint(1, 8) + self.stat_ability["con"]
@@ -77,6 +85,15 @@ class Player:
         self.inv = {
 
         }
+        self.equip = {
+            "head": None,
+            "body": None,
+            "legs": None,
+            "boots": None,
+            "arms": None,
+            "weapon": None
+        }
+
 
     def ability_modifier_maker(self):  # takes the numbers from stats and transforms them into ability modifiers.
         keys = []
@@ -284,11 +301,15 @@ def skill_definitions():  # A program to let player read what their skills do
             print("Please put a valid option.")
             answer = input().lower()
 
+
 import Items
+
+
 class Game:  # trying to make the game run as a class
     def __init__(self):
         self.commands = ["options", "continue", "save", "quit", "skills", "stats", "?", "inv", "inventory"]
         self.knowledge = []
+        self.inv = []
 
     def options(self):
         options = self.commands
@@ -298,33 +319,41 @@ class Game:  # trying to make the game run as a class
         for commands in options:
             print(commands)
 
-    def inventory(self):
+    def inventory_call(self):
+        self.inv.clear()  # resets game active inv
+
         read = open("item-data.json", "r")
         read = json.loads(read.read())
-
-        inv_list = []
-        inv_item_new = None  # this is all just so that I can get the name and show it to player.
         for inv_item in player.inv:  # cycles through the players items and adds them into a list
             copy_item = int(inv_item)  # copies it for further use
             for items in read["items"]:  # cycles through item data
                 if items["id"] == copy_item:  # now is checking if each inventory item id has item data
-                    inv_item_new = items  # gives inv_item_new all the data from that item
-            print(f'{inv_item_new["name"]} : {player.inv[inv_item]}')  # uses the name and amount and prints
+                    self.inv.append(Items.item_definer(items, player.inv[inv_item]))
+                    # gives inv_item_new all the data from that item
 
-            inv_list.append(Items.item_definer(inv_item_new))  # gets item data into a list
+    def inventory_items(self):
+        self.inventory_call()
 
         examine_options = {}
-        for x in inv_list:  # this is used so players can choose the names of items
+        for x in self.inv:  # this is used so players can choose the names of items
             name = x.name
+            print(f'{x.name} : {x.number}')
             examine_options[name] = x  # makes a dictionary. each name = the entire item data
 
         item_name = []  # this is used to let the answer see
         for x in examine_options.keys():
             item_name.append(x)
 
-        print("You can either examine an item, use an item, equip an item, delete an item, or exit")  # add delete?
+        return examine_options, item_name
+
+    def inventory(self):
+        self.inventory_call()
+
+        print("You can either examine an item, use an item, equip an item, delete an item, or exit.")  # add delete?
         option = input().lower()
         while option != "exit":  # will let players mess with inventory.
+
+            examine_options, item_name = self.inventory_items()
 
             if option == "examine":
                 print("What do you want to examine?")
@@ -350,6 +379,31 @@ class Game:  # trying to make the game run as a class
                     examine_options[answer].use(player, examine_options[answer].id)
 
             if option == "delete":
+                print("What do you want to delete?")
+                answer = input().lower()
+
+                while answer not in item_name:  # select thy poison
+                    if answer == "exit":
+                        break
+                    answer = input("Please pick a valid option\n").lower()
+
+                if answer in item_name:
+                    player.inv.pop(str(examine_options[answer].id))
+                    print("Deleted!")
+
+            if option == "equip":
+                print("What do you want to equip?")
+                answer = input().lower()
+
+                while answer not in item_name:  # select thy poison
+                    if answer == "exit":
+                        break
+                    answer = input("Please pick a valid option\n").lower()
+
+                if examine_options[answer].equip_able:
+                    examine_options[answer].equip(player)
+                else:
+                    print("L")
 
             option = input("Type 'exit' to leave or select another option\n").lower()
 

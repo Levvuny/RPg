@@ -48,7 +48,19 @@
       "name": "small health potion",
       "value": 5,
       "type": 2,
-      "description": "For use when no other option seems to help."
+      "description": "For use when no other option seems to help. (Heals 4)",
+      "heal": 4
+    },
+                        {
+      "id": 8,
+      "name": "wooden sword",
+      "value": 15,
+      "type": 5,
+      "description": "For use when no other option seems to help. (+1 str)",
+      "bonus": 1,
+      "weapon_type": "weapon",
+      "weapon_bonus": "str",
+      "equip": "True"
     }
   ]
 }
