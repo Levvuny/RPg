@@ -5,35 +5,40 @@
       "name": "coins",
       "value": 1,
       "type": 1,
-      "description": "It looks rather tasty. Eat the coin."
+      "description": "It looks rather tasty. Eat the coin.",
+      "equip": null
     },
     {
       "id": 2,
       "name": "wood",
       "value": 5,
       "type": 3,
-      "description": "It's wood."
+      "description": "It's wood.",
+      "equip": null
     },
         {
       "id": 3,
       "name": "monster guts",
       "value": 1,
       "type": 3,
-      "description": "Why would you keep this?"
+      "description": "Why would you keep this?",
+      "equip": null
     },
             {
       "id": 4,
       "name": "ash",
       "value": 0,
       "type": 3,
-      "description": "You sure like keeping junk."
+      "description": "You sure like keeping junk.",
+      "equip": null
     },
                 {
       "id": 5,
       "name": "cloth",
       "value": 5,
       "type": 3,
-      "description": "A plain and simple cloth. It seems pretty nice."
+      "description": "A plain and simple cloth. It seems pretty nice.",
+      "equip": null
     },
                 {
       "id": 6,
@@ -41,7 +46,8 @@
       "value": 0,
       "type": 2,
       "description": "It yearns to be consumed. (Heals 20)",
-      "heal": 20
+      "heal": 20,
+      "equip": null
     },
                     {
       "id": 7,
@@ -49,7 +55,8 @@
       "value": 5,
       "type": 2,
       "description": "For use when no other option seems to help. (Heals 4)",
-      "heal": 4
+      "heal": 4,
+      "equip": null
     },
                         {
       "id": 8,
@@ -60,7 +67,18 @@
       "bonus": 1,
       "weapon_type": "weapon",
       "weapon_bonus": "str",
-      "equip": "True"
+      "equip": true
+    },
+                            {
+      "id": 9,
+      "name": "iron dagger",
+      "value": 15,
+      "type": 5,
+      "description": "For use when no other option seems to help. (+1 str)",
+      "bonus": 2,
+      "weapon_type": "weapon",
+      "weapon_bonus": "dex",
+      "equip": true
     }
   ]
 }

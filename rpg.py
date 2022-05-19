@@ -403,7 +403,7 @@ class Game:  # trying to make the game run as a class
                 if examine_options[answer].equip_able:
                     examine_options[answer].equip(player)
                 else:
-                    print("L")
+                    print("You can't equip that!")
 
             option = input("Type 'exit' to leave or select another option\n").lower()
 

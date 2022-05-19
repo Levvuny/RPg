@@ -8,6 +8,7 @@ class Items:
         self.description = info["description"]
         self.value = info["value"]
         self.number = number
+        self.equip_able = info["equip"]
 
     def examine(self):
         print(self.description)
@@ -38,18 +39,17 @@ class Weapon(Items):
         self.bonus = info["bonus"]
         self.weapon_type = info["weapon_type"]
         self.weapon_bonus = info["weapon_bonus"]
-        self.equip_able = info["equip"]
-
 
     def equip(self, player):
 
         if player.equip[self.weapon_type]:
-            pass
+            self.dequip(player)
         player.stat_ability[self.weapon_bonus] += self.bonus
         player.equip[self.weapon_type] = self.bonus
         player.equip["weapon_type"] = self.weapon_bonus
 
-
+    def dequip(self, player):
+        player.stat_ability[player.equip["weapon_type"]] -= player.equip[self.weapon_type]
 
 class UseAbles(Items):
     def __init__(self, info, number):
