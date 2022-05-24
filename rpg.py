@@ -3,6 +3,7 @@ import json
 import enemies
 import encounters
 import combat
+import Items
 
 
 class Player:
@@ -91,9 +92,8 @@ class Player:
             "legs": None,
             "boots": None,
             "arms": None,
-            "weapon": None
+            "weapon": []
         }
-
 
     def ability_modifier_maker(self):  # takes the numbers from stats and transforms them into ability modifiers.
         keys = []
@@ -109,6 +109,7 @@ class Player:
 
     def fire_punch(self, enemy):  # all the info is in dict for the attack
         info = {
+            "roll_mod": self.stat_ability["int"],
             "damage": int(max(random.randint(1, 6) + self.stat_ability["str"], 1)),
             "damage_type": "fire",
             "debuff_turns": 2,
@@ -124,6 +125,7 @@ class Player:
 
     def basic_attack(self, enemy):  # all the info is in dict for the attack
         info = {
+            "roll_mod": self.stat_ability["str"],
             "damage": int(max(random.randint(1, 6) + self.stat_ability["str"], 1)),
             "damage_type": "basic",
             "debuff_turns": 0,
@@ -134,10 +136,18 @@ class Player:
 
     def combat_choice(self):  # A program to let player decide what move to do
         choices = []
+
         for keys, values in self.skills.items():  # takes all values in skills that are True and puts in list
             if values:
                 choices.append(keys)
+
         choice = 0
+        try:
+            if self.equip["weapon"][3]:
+                choices.append("special")
+        except IndexError:
+            pass  # this just makes it so that not having an item doesn't... destroy everything...
+        choices.append("inv")
 
         print(f'What do you want to do?\n')
         for x in choices:  # asks you what skill you want to use, if it isn't in your allowed skills it retries.
@@ -184,7 +194,7 @@ def d20():  # a basic d20 that also tells for critical fails/successes.
 
 def stat_saver():  # will save the player info to text files
     player_data = open("player-data.json", "w")
-    player_info = json.dumps(player.__dict__)
+    player_info = json.dumps(player.__dict__, indent=4)
     player_data.write(player_info)
     player_data.close()
 
@@ -302,9 +312,6 @@ def skill_definitions():  # A program to let player read what their skills do
             answer = input().lower()
 
 
-import Items
-
-
 class Game:  # trying to make the game run as a class
     def __init__(self):
         self.commands = ["options", "continue", "save", "quit", "skills", "stats", "?", "inv", "inventory"]
@@ -319,7 +326,7 @@ class Game:  # trying to make the game run as a class
         for commands in options:
             print(commands)
 
-    def inventory_call(self):
+    def inventory_call(self):  # everytime this is used it will update the usable inventory.
         self.inv.clear()  # resets game active inv
 
         read = open("item-data.json", "r")
@@ -356,13 +363,26 @@ class Game:  # trying to make the game run as a class
             examine_options, item_name = self.inventory_items()
 
             if option == "examine":
-                print("What do you want to examine?")
+                print("Enter the item you want to examine or type 'self' to examine yourself")
                 answer = input().lower()
 
                 while answer not in item_name:  # select thy poison
                     if answer == "exit":
                         break
+
+                    if answer == "self":
+                        empty = 0
+
+                        for item in player.equip:
+                            if player.equip[item]:
+                                empty = 1
+                                print(f'+{player.equip[item][0]} {player.equip[item][1]}: {player.equip[item][2]}')
+
+                        if empty == 0:
+                            print("Nothing to show here.")
+                        break
                     answer = input("Please pick a valid option\n").lower()
+
                 if answer in item_name:
                     examine_options[answer].examine()
 
@@ -405,6 +425,14 @@ class Game:  # trying to make the game run as a class
                 else:
                     print("You can't equip that!")
 
+            if option == "strip":
+
+                strip_list = ["head", "body", "legs", "boots", "weapon"]
+                for item in strip_list:
+                    if player.equip[item]:
+                        player.stat_ability[player.equip[item][1]] -= player.equip[item][0]
+                        player.equip[item] = []
+
             option = input("Type 'exit' to leave or select another option\n").lower()
 
     def turn_choice(self):
@@ -438,8 +466,7 @@ class Game:  # trying to make the game run as a class
             print(json.dumps(player.__dict__, indent=4))
 
         if response == "inv" or response == "inventory":
-            self.inventory()
-            # should each type of item be a class... such as "usables, equipables, craftables????
+            self.inventory()  # this was so much more work than expected...
 
         if response == "travel":  # knowledge areas
 
@@ -462,7 +489,7 @@ class Game:  # trying to make the game run as a class
             fate = random.randint(1, 2)
 
             if fate == 1:
-                combat.combat(player, randMon)
+                combat.combat(player, randMon, game)
             if fate == 2:
                 encounters.encounter_decider(player, randMon, game)
 
@@ -475,23 +502,5 @@ loading_system()
 while player.status["health"] > 0:
     game.turn_choice()
 
-# command = input("what do you want to do?\n").lower()
-# while command != "quit":
-#
-#     if command == "fight":
-#         random.shuffle(player.knownMonsters)
-#         combat.combat(player, enemies.enemy_definers(player.knownMonsters[0]))
-#
-#     if command == "encounter":
-#         randMon = enemies.enemy_definers(player.knownMonsters[0])
-#         encounters.old_man(player, randMon, game)
-#
-#     if command == "skills":
-#         skill_definitions()
-#
-#     if command == "stats":
-#         print(json.dumps(player.__dict__, indent=4))
-#
-#     command = input().lower()
 
 stat_saver()

@@ -39,23 +39,29 @@ def basic_dialogue(player, enemy, game):
     option = random.randint(1, 10)
     if option == 1:
         print("You see a squirrel run around an ancient oak tree.")
+
     elif option == 2:
         print("As you continue down the path, you stop at by a small well and fetch a drink and then continue")
         print("down your journey.")
+
     elif option == 3:
         print("As you walk down the worn path, you see a great forest full of life. You cannot even fathom all that")
         print("hides within those ancient trees. A blast of wind hits you and you watch as the trees dance to the beat")
         print("of the breeze.")
+
     elif option == 4:
         print("You sure are hungry, but you keep on going.")
+
     elif option == 5:
         print("A wild boar crosses your path. It looks at you with deep, unknowing eyes and slowly walks away.")
         if "boar" not in player.knownMonsters:
             player.knownMonsters.append("boar")
+
     elif option == 6:
         random_thing = ["your mother", "a lizard", "a... tree", "Greg"]
         random.shuffle(random_thing)
         print(f"You pass by a tree that kind of looks like {random_thing[0]}.")
+
     elif option == 7:
         vowels = ["a", "e", "i", "o", "u"]
         if enemy.name[0:1] in vowels:  # grammar is good
@@ -64,6 +70,11 @@ def basic_dialogue(player, enemy, game):
             grammar = "a"
         print(f'You see {grammar} {enemy.name}. You named it John')
 
+    elif option == 8:
+        print("You cannot get the number '110' out of your head.")
+
+    elif option == 9:
+        print("The road has seemed lonely lately. You hope you can find some company soon.")
 
 
 def lonely_inn():  # locations that player can revisit as they explore more of the world
@@ -99,16 +110,20 @@ def damaged_bridge(player, enemy, game):  # is only available till bridge is fix
             answer = input().lower()
 
         if answer == "repair":
-            if player.inv["wood"] >= 10:
-                player.inv["wood"] -= 10
-                print("You spend the whole day fixing the bridge. It isn't the most beautiful work, but you")
-                print("successfully repair the broken bridge and are able to access the other side.")
+            try:
+                if player.inv["2"] >= 10:
+                    player.inv["2"] -= 10
+                    print("You spend the whole day fixing the bridge. It isn't the most beautiful work, but you")
+                    print("successfully repair the broken bridge and are able to access the other side.")
 
-                game.knowledge.remove("bridge")
-                game.knowledge.append("meadow")
-                return
+                    game.knowledge.remove("bridge")
+                    game.knowledge.append("meadow")
+                    return
 
-            else:
+                else:
+                    print("You have the ambition, but not the resources. You should get some wood to repair it.")
+                    answer = input().lower()
+            except KeyError:
                 print("You have the ambition, but not the resources. You should get some wood to repair it.")
                 answer = input().lower()
 
@@ -118,8 +133,10 @@ def damaged_bridge(player, enemy, game):  # is only available till bridge is fix
 
 
 def meadow(player, enemy, game):
-    print("You made it to the meadow.")
+    print("The meadow is beautiful. With some work, this could be a beautiful place for you to make a small camp.")
+    options = ["build", "rest", "leave"]
 
+    camp_level = pass
 
 
 def stormy_night(player, enemy, game):
@@ -131,7 +148,6 @@ def fire_shrine(player, enemy, game):
 
 
 def sunny_road(player, enemy, game):  # small events like this that just happen, small thing happens one or two options
-    placeholder = enemy
 
     if random.randint(1, 20) + player.stat_ability["cha"] >= 11:
         print("The sun shines brightly down on you. What a lovely day.\n(+ 1 health)")
@@ -265,7 +281,7 @@ def old_man(player, enemy, game):
             d20r2 = random.randint(1, 20)
             if d20r2 < 6:
                 print("The creature seems angry that you disturbed it and gets ready to attack you.")
-                return combat.combat(player, enemy)
+                return combat.combat(player, enemy, game)
 
             else:
                 print("The creature doesn't seem to be dangerous, but you can never be too safe. What do you do?")
@@ -283,4 +299,4 @@ def old_man(player, enemy, game):
                     return
 
                 if moral == "attack":
-                    return combat.combat(player, enemy)
+                    return combat.combat(player, enemy, game)

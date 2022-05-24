@@ -66,7 +66,7 @@ def player_buff_check(player, ac):
                 player.status["ac"] = ac
 
 
-def enemy_debuff_check(enemy):
+def enemy_debuff_check(enemy, enemy_resistance):
 
     if enemy.fire:
         enemy.health -= enemy.fire  # does more damage than poison, but is harder to stack
@@ -77,6 +77,12 @@ def enemy_debuff_check(enemy):
         enemy.health -= 1  # poison
         print(f'The {enemy.name} has taken 1 poison damage\n')  # yeah, I comment
         enemy.poison -= 1
+
+    if enemy.wet:
+        enemy.resistance = []
+        enemy.wet -= 1
+        if not enemy.wet:
+            enemy.resistance = enemy_resistance
 
 
 def damage_dealer(enemy, info):  # takes a dict from enemies attacks to see what attack will do when hit with resistance
@@ -125,7 +131,7 @@ def looting(player, enemy):
     loot_info = loot_info.read()
     loot_info = json.loads(loot_info)
 
-    loot_name = loot_info["items"][enemy.loot[0] - 1] # this is all just to get the right name
+    loot_name = loot_info["items"][enemy.loot[0] - 1]  # this is all just to get the right name
 
     if enemy.loot:
         if enemy.loot[0] in player.inv:
@@ -137,7 +143,9 @@ def looting(player, enemy):
         print(f'You collected {enemy.loot[1]} {loot_name["name"]} from the {enemy.name}.')
 
 
-def combat(player, enemy):
+def combat(player, enemy, game):
+
+    enemy_resistance = enemy.resistance
 
     real_ac = player.status["ac"]
     if enemy.name == "greg":
@@ -153,14 +161,18 @@ def combat(player, enemy):
         print(f'You have encountered {grammar} {enemy.name}!')
 
     while player.status["health"] or enemy.status["health"] > 0:
-
+        print(enemy.resistance)
         player_buff_check(player, real_ac)  # should be able to build this up to work with turn based resets for buffs
         turn_move = player.combat_choice()  # asks for the player's input of what to do.
 
-        if turn_move == "attack":  # starts attack move
+        if turn_move == "inv":
+            game.inventory()
 
-            if roll_check(player.stat_ability["str"], enemy.ac):  # but only if player succeeds roll
-                damage_dealer(enemy, player.basic_attack(enemy))
+        if turn_move == "attack":  # starts attack move
+            turn = player.basic_attack(enemy)
+
+            if roll_check(turn["roll_mod"], enemy.ac):  # checks to see if players int roll is better than ac
+                damage_dealer(enemy, turn)
 
         if turn_move == "flee":  # a simply check to see if player can escape. add later for un-escapable monsters.
             # make an "if monster escapable" statement before this once monsters updated.
@@ -176,8 +188,15 @@ def combat(player, enemy):
             player.defend(real_ac)
 
         if turn_move == "fire punch":
-            if roll_check(player.stat_ability["int"], enemy.ac):  # checks to see if players int roll is better than ac
-                damage_dealer(enemy, player.fire_punch(enemy))
+            turn = player.fire_punch(enemy)
+
+            if roll_check(turn["roll_mod"], enemy.ac):  # checks to see if players int roll is better than ac
+                damage_dealer(enemy, turn)
+
+        if turn_move == "special":
+            turn = player.equip["weapon"][3]
+            if roll_check(turn["roll_mod"], enemy.ac):
+                damage_dealer(enemy, turn)
 
         if enemy.health < 1:  # checks to see if player has defeated enemy yet
             print(f'You defeated the {enemy.name}.')
@@ -195,12 +214,12 @@ def combat(player, enemy):
         enemy_turn = enemy.combat_choice()  # turns the entire enemy turn into a dictionary that can be used in file
         if roll_check(enemy_turn["roll_mod"], player.status["ac"]):  # checks if the attack will work
             damage_dealer(player, enemy_turn)
+
         player_death_check(player)
         print(f'\nYou have {player.status["health"]} health left.\n')
 
-        enemy_debuff_check(enemy)
+        enemy_debuff_check(enemy, enemy_resistance)
         if enemy.health < 1:  # checks to see if player has defeated enemy yet
             print(f'You defeated the {enemy.name}.')
             stat_reset(player, real_ac)
             return looting(player, enemy)
-

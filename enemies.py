@@ -140,6 +140,7 @@ class Monster:
         self.max_health = self.health
         self.fire = 0
         self.poison = 0
+        self.wet = 0
         self.defense = 0
         self.resistance = []
         self.attacks = [self.basic_attack]
@@ -276,8 +277,8 @@ class SmurgusTheHotdogMan(Monster):
         super().__init__(name, lvl)
         self.resistance.append("hotdog")
         self.resistance.append("shmeat")
-        self.attacks.remove(self.basic_attack)
         self.attacks.append(self.hotdogs)
+        self.attacks.remove(self.basic_attack)
 
     def hotdogs(self):
         info = {

@@ -67,18 +67,61 @@
       "bonus": 1,
       "weapon_type": "weapon",
       "weapon_bonus": "str",
-      "equip": true
+      "equip": true,
+      "special": null
     },
                             {
       "id": 9,
       "name": "iron dagger",
       "value": 15,
       "type": 5,
-      "description": "For use when no other option seems to help. (+1 str)",
+      "description": "Shiny and pointy! (+2 str)",
       "bonus": 2,
       "weapon_type": "weapon",
+      "weapon_bonus": "str",
+      "equip": true,
+      "special": null
+    },
+                                {
+      "id": 10,
+      "name": "fancy hat",
+      "value": 25,
+      "type": 4,
+      "description": "Fashion has always been your thing. (+1 cha)",
+      "bonus": 1,
+      "weapon_type": "head",
+      "weapon_bonus": "cha",
+      "equip": true
+    },
+                                    {
+      "id": 11,
+      "name": "worn leather leggings",
+      "value": 5,
+      "type": 4,
+      "description": "At least it helps. (+1 dex)",
+      "bonus": 1,
+      "weapon_type": "legs",
       "weapon_bonus": "dex",
       "equip": true
+    },
+                                        {
+      "id": 12,
+      "name": "live frog",
+      "value": 0,
+      "type": 5,
+      "description": "This will not help you fight. Why keep him?",
+      "bonus": -5,
+      "weapon_type": "weapon",
+      "weapon_bonus": "str",
+      "equip": true,
+      "special": {
+            "roll_mod": 100,
+            "damage": 0,
+            "damage_type": "wet",
+            "debuff_turns": 4,
+            "success_hit": "You hit your enemy with the frog. You monster.",
+            "weak_hit": "This frog missed. Tragic."
+      }
     }
   ]
 }

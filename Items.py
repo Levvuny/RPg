@@ -1,4 +1,6 @@
 import json
+import random
+
 
 class Items:
 
@@ -22,18 +24,13 @@ types:
 
 1 = usable
 2 = food
-3 = craftable
+3 = craft-able
 4 = armor
 5 = weapon
 """
 
 
-class Armor(Items):
-    def __init__(self, info, number):
-        super().__init__(info, number)
-
-
-class Weapon(Items):
+class Equipable(Items):
     def __init__(self, info, number):
         super().__init__(info, number)
         self.bonus = info["bonus"]
@@ -45,11 +42,38 @@ class Weapon(Items):
         if player.equip[self.weapon_type]:
             self.dequip(player)
         player.stat_ability[self.weapon_bonus] += self.bonus
-        player.equip[self.weapon_type] = self.bonus
-        player.equip["weapon_type"] = self.weapon_bonus
+        player.equip[self.weapon_type] = list((self.bonus, self.weapon_bonus, self.name))
 
     def dequip(self, player):
-        player.stat_ability[player.equip["weapon_type"]] -= player.equip[self.weapon_type]
+        player.stat_ability[player.equip[self.weapon_type][1]] -= player.equip[self.weapon_type][0]
+
+
+class Armor(Equipable):
+    def __init__(self, info, number):
+        super().__init__(info, number)
+
+
+class Weapon(Equipable):
+    def __init__(self, info, number):
+        super().__init__(info, number)
+        self.special = info["special"]
+
+    def equip(self, player):
+
+        special_placeholder = None
+        if self.special:
+            special_placeholder = self.special_move()
+
+        if player.equip[self.weapon_type]:
+            self.dequip(player)
+        player.stat_ability[self.weapon_bonus] += self.bonus
+        player.equip[self.weapon_type] = list((self.bonus, self.weapon_bonus, self.name, special_placeholder))
+
+    def special_move(self):
+        mod = random.randint(1, int(self.special["roll_mod"]))  # calculates the actual roll mod
+        self.special["roll_mod"] = mod
+        return self.special  # returns a dictionary like most attacks. might change more later?
+
 
 class UseAbles(Items):
     def __init__(self, info, number):
