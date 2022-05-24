@@ -161,7 +161,6 @@ def combat(player, enemy, game):
         print(f'You have encountered {grammar} {enemy.name}!')
 
     while player.status["health"] or enemy.status["health"] > 0:
-        print(enemy.resistance)
         player_buff_check(player, real_ac)  # should be able to build this up to work with turn based resets for buffs
         turn_move = player.combat_choice()  # asks for the player's input of what to do.
 

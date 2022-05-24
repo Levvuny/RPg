@@ -76,20 +76,23 @@ def basic_dialogue(player, enemy, game):
     elif option == 9:
         print("The road has seemed lonely lately. You hope you can find some company soon.")
 
+def merchant(player, enemy, game):  # khajit has wares if one has coins
+    print("You see a cat by the side of the road, but as you go up to pet it you see that it has many wares for you")
+    print("to purchase.")
 
 def lonely_inn():  # locations that player can revisit as they explore more of the world
     pass
 
 
 def damaged_bridge_encounter(player, enemy, game):  # shows the bridge area and allows player to come back.
-    if "bridge" in game.knowledge or "meadow" in game.knowledge:
+    if "bridge" in game.knowledge["knowledge"] or "meadow" in game.knowledge["knowledge"]:
         return basic_dialogue(player, enemy, game)
 
     print("You come to a raging river that seems too terrifying to try to ford. You can see a relaxing meadow full of")
     print("fruit trees on the other side, but the bridge to it is far too damaged to cross. Maybe if you bring some")
     print("wood to fix it you can see the other side.")
 
-    game.knowledge.append("bridge")
+    game.knowledge["knowledge"].append("bridge")
 
     return
 
@@ -116,8 +119,8 @@ def damaged_bridge(player, enemy, game):  # is only available till bridge is fix
                     print("You spend the whole day fixing the bridge. It isn't the most beautiful work, but you")
                     print("successfully repair the broken bridge and are able to access the other side.")
 
-                    game.knowledge.remove("bridge")
-                    game.knowledge.append("meadow")
+                    game.knowledge["knowledge"].remove("bridge")
+                    game.knowledge["knowledge"].append("meadow")
                     return
 
                 else:
@@ -136,7 +139,7 @@ def meadow(player, enemy, game):
     print("The meadow is beautiful. With some work, this could be a beautiful place for you to make a small camp.")
     options = ["build", "rest", "leave"]
 
-    camp_level = pass
+    # camp_level = pass
 
 
 def stormy_night(player, enemy, game):
@@ -182,7 +185,7 @@ def short_rest(player, enemy, game):
         time.sleep(3)
         print("As you get up to continue your journey, the statue continues to point towards the horizon forever more.")
         player.status["health"] = player.status["max_health"]
-        game.knowledge.append("Frowning King")
+        game.knowledge["knowledge"].append("Frowning King")
         player.status["poison"] = 0
         return
 

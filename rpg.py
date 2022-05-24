@@ -204,7 +204,7 @@ def stat_saver():  # will save the player info to text files
     game_data.close()
 
 
-def stat_roll():   # Rolls all the dice needed for one stat.
+def stat_roll():  # Rolls all the dice needed for one stat.
     dice1, dice2, dice3, dice4 = random.randint(1, 6), random.randint(1, 6), random.randint(1, 6), random.randint(1, 6)
     num = [dice1, dice2, dice3, dice4]
     num.sort()
@@ -267,10 +267,24 @@ def loading_system():
                 print("please enter \'yes\' or \'no\'")
 
         if file_answer != "yes":
-            game.knowledge.clear()
+            game.knowledge = {
+                "knowledge": [],
+                "merchant": {
+                    "7": 7,
+                    "8": 20,
+                    "9": 40
+                }
+            }
             stat_maker()  # new load out!
     else:
-        game.knowledge.clear()
+        game.knowledge = {
+            "knowledge": [],
+            "merchant": {
+                "7": 7,
+                "8": 20,
+                "9": 40
+            }
+        }
         stat_maker()  # new load out!
 
 
@@ -315,12 +329,19 @@ def skill_definitions():  # A program to let player read what their skills do
 class Game:  # trying to make the game run as a class
     def __init__(self):
         self.commands = ["options", "continue", "save", "quit", "skills", "stats", "?", "inv", "inventory"]
-        self.knowledge = []
+        self.knowledge = {
+            "knowledge": [],
+            "merchant": {
+                "7": 7,
+                "8": 20,
+                "9": 40
+            }
+        }
         self.inv = []
 
     def options(self):
         options = self.commands
-        if self.knowledge:
+        if self.knowledge["knowledge"]:
             if "travel" not in options:
                 options.append("travel")
         for commands in options:
@@ -420,6 +441,8 @@ class Game:  # trying to make the game run as a class
                         break
                     answer = input("Please pick a valid option\n").lower()
 
+                if answer == "exit":
+                    break
                 if examine_options[answer].equip_able:
                     examine_options[answer].equip(player)
                 else:
@@ -441,7 +464,7 @@ class Game:  # trying to make the game run as a class
 
         response = input("What do you want to do?\n").lower()
         options = self.commands
-        if self.knowledge:
+        if self.knowledge["knowledge"]:
             if "travel" not in options:
                 options.append("travel")
 
@@ -471,11 +494,11 @@ class Game:  # trying to make the game run as a class
         if response == "travel":  # knowledge areas
 
             print("Where do you want to go?")
-            for item in self.knowledge:
+            for item in self.knowledge["knowledge"]:
                 print(item)
 
             choice = input().lower()
-            while choice not in self.knowledge:
+            while choice not in self.knowledge["knowledge"]:
                 choice = input("Please pick a valid option\n").lower()
 
             if choice == "bridge":
@@ -498,9 +521,7 @@ game = Game()
 player = Player()
 loading_system()
 
-
 while player.status["health"] > 0:
     game.turn_choice()
-
 
 stat_saver()
