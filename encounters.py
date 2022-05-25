@@ -126,7 +126,11 @@ def merchant(player, enemy, game):  # khajit has wares if one has coins
                     player.inv[inv[purchase][0]] = 1
                 player.inv["1"] -= inv[purchase][1]
 
-            print(f'You bought the {purchase}')
+                print(f'You bought the {purchase}')
+
+            else:
+                print("You cannot afford that.")
+
         options = input("You can either purchase or exit.\n").lower()
 
 
