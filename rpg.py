@@ -520,7 +520,7 @@ game = Game()
 player = Player()
 loading_system()
 
-encounters.merchant(player, player, game)
+
 
 while player.status["health"] > 0:
     game.turn_choice()

@@ -19,7 +19,7 @@ for x in EnemyInfo["Name"]:
 
 
 def encounter_decider(player, enemy, game):
-    encounter_list = [old_man, short_rest, sunny_road, damaged_bridge_encounter]
+    encounter_list = [old_man, short_rest, sunny_road, damaged_bridge_encounter, merchant]
     random.shuffle(encounter_list)
     return encounter_list[0](player, enemy, game)
 

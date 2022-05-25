@@ -1,25 +1,25 @@
 {
     "type": "player",
     "stats": {
-        "str": 16,
-        "dex": 16,
-        "con": 12,
-        "wis": 13,
-        "int": 14,
-        "cha": 12
+        "str": 11,
+        "dex": 14,
+        "con": 11,
+        "wis": 18,
+        "int": 18,
+        "cha": 7
     },
     "stat_ability": {
-        "str": 3,
-        "dex": 3,
-        "con": 1,
-        "wis": 1,
-        "int": 2,
-        "cha": 1
+        "str": 0,
+        "dex": 2,
+        "con": 0,
+        "wis": 4,
+        "int": 4,
+        "cha": -2
     },
     "status": {
-        "health": 9,
-        "max_health": 9,
-        "ac": 13,
+        "health": 2,
+        "max_health": 2,
+        "ac": 12,
         "poison": 0,
         "fire": 0,
         "weakness": 0,
@@ -37,8 +37,8 @@
         "power": 0
     },
     "inv": {
-        "1": 4960,
-        "9": 1
+        "1": 5,
+        "12": 1
     },
     "knownMonsters": [
         "slime"
