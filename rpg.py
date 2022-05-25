@@ -84,7 +84,7 @@ class Player:
         self.knownMonsters.append("slime")
         self.knowledge.clear()
         self.inv = {
-
+            "1": 5
         }
         self.equip = {
             "head": None,
@@ -516,10 +516,11 @@ class Game:  # trying to make the game run as a class
             if fate == 2:
                 encounters.encounter_decider(player, randMon, game)
 
-
 game = Game()
 player = Player()
 loading_system()
+
+encounters.merchant(player, player, game)
 
 while player.status["health"] > 0:
     game.turn_choice()

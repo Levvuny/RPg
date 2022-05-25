@@ -3,6 +3,7 @@ import random
 import requests
 import time
 import combat
+import json
 
 EnemySheet = requests.get("https://sheets.googleapis.com/v4/spreadsheets/1_Ym0miRRwRvT6j0cTkbwEgiiZ9GImDkJqhR7OAw33R8/values/Sheet1?key=AIzaSyB5DWWVzSER7OpXYIFVuhq0KysBzQocy7U")
 
@@ -76,9 +77,61 @@ def basic_dialogue(player, enemy, game):
     elif option == 9:
         print("The road has seemed lonely lately. You hope you can find some company soon.")
 
+
+def merch_inv(inv):
+    item_data = open("item-data.json", "r")  # a simple way to load da item data ( def better way to do this )
+    item_data = item_data.read()
+    item_data = json.loads(item_data)
+    inventory = {}
+
+    for item_id in inv.keys():
+
+        for item in item_data["items"]:
+            if int(item_id) == item["id"]:
+                inventory[item["name"]] = [item_id, inv[item_id]]
+
+    return inventory
+
+
 def merchant(player, enemy, game):  # khajit has wares if one has coins
+    inv = merch_inv(game.knowledge["merchant"])
+
     print("You see a cat by the side of the road, but as you go up to pet it you see that it has many wares for you")
-    print("to purchase.")
+    print("to purchase. The items you can buy are:")
+
+    buying_options = []
+
+    for name in inv.keys():
+        buying_options.append(name)
+        print(f'{name} : {inv[name][1]}')
+
+    print()
+    print(f'You have {player.inv["1"]} coins')
+
+    options = input("You can either purchase or exit.\n").lower()
+
+    while options != "exit":
+        if options == "purchase":
+            purchase = input("What do you want to buy?\n").lower()
+            while purchase not in buying_options:
+                purchase = input("Please select a valid option\n").lower()
+
+                if purchase == "exit":
+                    break
+
+            if player.inv["1"] >= inv[purchase][1]:
+                try:
+                    player.inv[inv[purchase][0]] += 1
+                except KeyError:
+                    player.inv[inv[purchase][0]] = 1
+                player.inv["1"] -= inv[purchase][1]
+
+            print(f'You bought the {purchase}')
+        options = input("You can either purchase or exit.\n").lower()
+
+
+
+
 
 def lonely_inn():  # locations that player can revisit as they explore more of the world
     pass
