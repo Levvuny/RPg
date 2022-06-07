@@ -516,10 +516,10 @@ class Game:  # trying to make the game run as a class
             if fate == 2:
                 encounters.encounter_decider(player, randMon, game)
 
+
 game = Game()
 player = Player()
 loading_system()
-
 
 
 while player.status["health"] > 0:
