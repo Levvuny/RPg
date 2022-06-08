@@ -18,6 +18,76 @@ for x in EnemyInfo["Name"]:
     monsterNames.append(x)
 
 
+class Meadow1:  # main class for the meadow / village program
+    def __init__(self, level):
+        self.level = level
+        self.opening = "You reach the meadow. The area is beautiful. With a little work it could be a nice base.\n"
+
+    def run(self, player, enemy, game):
+        options = ["build", "rest", "leave"]
+        print(self.opening)
+        print("What would you like to do?")
+
+        for item in options:
+            print(item)
+
+        answer = input().lower()
+        while answer != "leave":
+
+            if answer not in options:
+                answer = input("Please put a valid option or type 'leave'\n").lower()
+
+            if answer == "build":
+                if self.build(player, enemy, game):
+                    return
+
+            if answer == "rest":
+                player.status["health"] = player.status["max_health"]
+                print("You have a good nights rest and feel well off.")
+
+            answer = input("Please put a valid option or type 'leave'\n").lower()
+
+
+    def build(self, player, enemy, game):
+        print("To add a hut to the meadow you must use 10 wood.")
+        answer = input("Do you want to build the hut? yes/no\n").lower()
+
+        while answer != "yes" or answer != "no":
+
+            if answer == "yes":
+                try:
+                    if player.inv["2"] >= 10:
+                        player.inv["2"] -= 10
+                        print("You successfully built a hut!")
+
+                        game.knowledge["meadow"] = 1
+                        return True
+
+                    else:
+                        print("You need more wood to make a hut.")
+                        return
+                except KeyError:
+                    print("You need more wood to make a hut.")
+                    return
+
+            if answer == "no":
+                return
+
+            answer = input("Please answer 'yes' or 'no'\n").lower()
+
+
+class Meadow2(Meadow1):
+    def __init__(self, level):
+        super().__init__(level)
+
+
+def meadow_decider(lvl):
+    if lvl == 0:
+        return Meadow1(lvl)
+    elif lvl == 1:
+        return Meadow2(lvl)
+
+
 def encounter_decider(player, enemy, game):
     encounter_list = [old_man, short_rest, sunny_road, damaged_bridge_encounter, merchant]
     random.shuffle(encounter_list)
@@ -134,9 +204,6 @@ def merchant(player, enemy, game):  # khajit has wares if one has coins
         options = input("You can either purchase or exit.\n").lower()
 
 
-
-
-
 def lonely_inn():  # locations that player can revisit as they explore more of the world
     pass
 
@@ -193,8 +260,44 @@ def damaged_bridge(player, enemy, game):  # is only available till bridge is fix
 
 
 def meadow(player, enemy, game):
-    print("The meadow is beautiful. With some work, this could be a beautiful place for you to make a small camp.")
-    options = ["build", "rest", "leave"]
+    meadow_info = meadow_decider(int(game.knowledge["meadow"]))
+    meadow_info.run(player, enemy, game)
+    # print(meadow_info.opening)
+    # options = ["build", "rest", "leave"]
+    #
+    # answer = input().lower()
+    # while answer != "leave":
+    #
+    #     if answer not in options:
+    #         answer = input("Please put a valid option\n").lower()
+    #
+    #     if answer == "gaze":
+    #         print("You stare at where you want to be, but will you do anything to get there?")
+    #         answer = input().lower()
+    #
+    #     if answer == "repair":
+    #         try:
+    #             if player.inv["2"] >= 10:
+    #                 player.inv["2"] -= 10
+    #                 print("You spend the whole day fixing the bridge. It isn't the most beautiful work, but you")
+    #                 print("successfully repair the broken bridge and are able to access the other side.")
+    #
+    #                 game.knowledge["knowledge"].remove("bridge")
+    #                 game.knowledge["knowledge"].append("meadow")
+    #                 return
+    #
+    #             else:
+    #                 print("You have the ambition, but not the resources. You should get some wood to repair it.")
+    #                 answer = input().lower()
+    #         except KeyError:
+    #             print("You have the ambition, but not the resources. You should get some wood to repair it.")
+    #             answer = input().lower()
+    #
+    # if answer == "leave":
+    #     print("You leave the meadow to continue your adventure.")
+    #     return
+
+
 
     # camp_level = pass
 

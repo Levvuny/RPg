@@ -273,7 +273,8 @@ def loading_system():
                     "7": 7,
                     "8": 20,
                     "9": 40
-                }
+                },
+                "meadow": 0
             }
             stat_maker()  # new load out!
     else:
@@ -283,7 +284,8 @@ def loading_system():
                 "7": 7,
                 "8": 20,
                 "9": 40
-            }
+            },
+            "meadow": 0
         }
         stat_maker()  # new load out!
 
@@ -335,7 +337,8 @@ class Game:  # trying to make the game run as a class
                 "7": 7,
                 "8": 20,
                 "9": 40
-            }
+            },
+            "meadow": 0
         }
         self.inv = []
 
@@ -520,6 +523,9 @@ class Game:  # trying to make the game run as a class
 game = Game()
 player = Player()
 loading_system()
+randMon = enemies.enemy_definers(player.knownMonsters[0])
+
+encounters.meadow(player, randMon, game)
 
 
 while player.status["health"] > 0:
